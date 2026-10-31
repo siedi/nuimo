@@ -63,10 +63,20 @@ nuimo/
       ButtonGestures.swift             kurzer, langer, doppelter Druck, hold
       Scheduler.swift                  Zeitgeber als Protokoll, damit Tests ohne Warten auskommen
       MainScheduler.swift              Zeitgeber mit echter Zeit
-      Config.swift                     TOML laden, neu laden, Profile auflösen
+      Config.swift                     TOML parsen, Profile auflösen
+      ConfigStore.swift                Datei anlegen, bei Änderung neu laden, Fehler merken
+      Settings.swift, Profile.swift    Inhalt der Belegung
+      Action.swift                     Aktion aus dem Text der Belegung, mit Parser
+      ActionParseError.swift           Fehler beim Parsen einer Aktion
+      KeyShortcut.swift                Tastenkürzel und Tastencodes
+      KeyModifiers.swift               cmd, shift, ctrl, opt
+      MediaKey.swift                   Medientasten
+      FrontmostApp.swift               App, die vorne ist
       Controller.swift                 Ereignis → Profil → Aktion
-      Actions.swift                    Tasten, Medientasten, Scrollen, Shell
-      Volume.swift                     Systemlautstärke über CoreAudio
+      Outputs.swift                    Protokoll für alle Ausgaben des Controllers
+      SystemOutputs.swift              Ausgaben der laufenden App
+      SystemActions.swift              Tasten, Medientasten, Scrollen, Shell
+      SystemVolume.swift               Systemlautstärke über CoreAudio
       MIDIOut.swift                    virtueller MIDI-Ausgang
       DebugLog.swift                   abschaltbares Log in eine Datei
     Tests/NuimoBarTests/
