@@ -7,9 +7,9 @@
 #   "pyobjc-framework-ApplicationServices",
 # ]
 # ///
-"""Nuimo als Mac-Controller: Gesten lösen je nach aktiver App Tastenkürzel, Scrollen, Medientasten usw. aus.
+"""Nuimo as a Mac controller: gestures trigger shortcuts, scrolling, media keys etc. depending on the active app.
 
-Die Belegung steht in config.toml neben diesem Skript.
+The mapping lives in config.toml next to this script.
 """
 
 import asyncio
@@ -48,7 +48,7 @@ PATTERNS = {
     "longtouch_bottom": DOT_BOTTOM,
 }
 
-# Virtuelle Tastencodes von macOS (Position auf der US-Tastatur)
+# macOS virtual key codes (position on the US keyboard)
 KEYCODES = {
     "a": 0, "s": 1, "d": 2, "f": 3, "h": 4, "g": 5, "z": 6, "x": 7, "c": 8, "v": 9, "b": 11, "q": 12,
     "w": 13, "e": 14, "r": 15, "y": 16, "t": 17, "1": 18, "2": 19, "3": 20, "4": 21, "6": 22, "5": 23,
@@ -72,7 +72,7 @@ MEDIA_KEYS = {"playpause": 16, "next": 17, "previous": 18, "mute": 7}  # NX_KEYT
 
 
 class Config:
-    """Liest config.toml und lädt sie neu, sobald sich die Datei ändert."""
+    """Reads config.toml and reloads it as soon as the file changes."""
 
     def __init__(self):
         self.mtime = None
@@ -91,7 +91,7 @@ class Config:
 
 
 def frontmost_app() -> tuple[str, str]:
-    # Ohne kurz laufende Runloop liefert NSWorkspace den Stand vom Programmstart
+    # Without briefly running the run loop, NSWorkspace returns the state from program start
     NSRunLoop.currentRunLoop().runUntilDate_(NSDate.dateWithTimeIntervalSinceNow_(0.005))
     app = NSWorkspace.sharedWorkspace().frontmostApplication()
     return app.localizedName(), app.bundleIdentifier()
@@ -122,7 +122,7 @@ def send_scroll(pixels: float, modifiers: str = ""):
 
 def send_media(name: str):
     code = MEDIA_KEYS[name]
-    for flags in (0xA00, 0xB00):  # Taste unten, Taste oben
+    for flags in (0xA00, 0xB00):  # key down, key up
         event = NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2_(
             14, (0, 0), flags, 0, 0, None, 8, (code << 16) | flags, -1
         )
@@ -130,7 +130,7 @@ def send_media(name: str):
 
 
 class Volume:
-    """Systemlautstärke; bei schnellem Drehen wird nur der jeweils neueste Wert gesetzt."""
+    """System volume; when turning fast, only the newest value is applied."""
 
     def __init__(self):
         self.value = 0.0
@@ -139,7 +139,7 @@ class Volume:
         self.task = asyncio.create_task(self._run())
 
     def change(self, percent: float) -> float:
-        # Nach einer Pause neu einlesen, die Lautstärke kann sich über die Tastatur geändert haben
+        # Re-read after a pause, the volume may have been changed via the keyboard
         if time.monotonic() - self.last_change > 2:
             out = subprocess.run(
                 ["osascript", "-e", "output volume of (get volume settings)"], capture_output=True, text=True
@@ -164,7 +164,7 @@ async def session(client: BleakClient, config: Config, volume: Volume):
     battery = (await client.read_gatt_char(BATTERY))[0]
     print(f"Verbunden. Akku: {battery} %")
     display = Display(client)
-    rotation_rest = {}  # angefangene Schritte bei rotate_left/right
+    rotation_rest = {}  # partial steps for rotate_left/right
 
     def profiles() -> tuple[str, list[dict]]:
         data = config.get()
@@ -248,7 +248,7 @@ async def session(client: BleakClient, config: Config, volume: Volume):
     await client.start_notify(SWIPE, on_swipe)
     await client.start_notify(FLY, on_fly)
 
-    # Erst die eigene Verbindungsanimation (Haken) des Nuimo abwarten
+    # Wait for the Nuimo's own connection animation (check mark) first
     await asyncio.sleep(2)
     display.show(SMILEY, seconds=1)
     while client.is_connected:

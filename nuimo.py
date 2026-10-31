@@ -2,7 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["bleak"]
 # ///
-"""Verbindet sich mit einem Senic Nuimo, gibt alle Eingaben aus und zeigt sie auf der LED-Matrix."""
+"""Connects to a Senic Nuimo, prints every input and shows it on the LED matrix."""
 
 import asyncio
 
@@ -16,9 +16,9 @@ FLY = SENSOR.format("26")
 LED_MATRIX = "f29b1524-cb19-40f3-be5c-7241ecb82fd1"
 BATTERY = "00002a19-0000-1000-8000-00805f9b34fb"
 
-LONG_PRESS = 0.4  # Sekunden halten bis "lang"
-DOUBLE_GAP = 0.35  # Sekunden Wartezeit auf einen zweiten Druck
-ROTATION_PER_TURN = 2650  # Drehwert einer vollen Umdrehung, etwa
+LONG_PRESS = 0.4  # seconds to hold until a press counts as long
+DOUBLE_GAP = 0.35  # seconds to wait for a second press
+ROTATION_PER_TURN = 2650  # approximate rotation value of one full turn
 
 SWIPE_NAMES = [
     "swipe left", "swipe right", "swipe up", "swipe down",
@@ -29,12 +29,12 @@ FLY_NAMES = {0: "fly left", 1: "fly right", 4: "fly up/down"}
 
 
 def grid(pattern: str) -> list[bool]:
-    """9x9-Muster aus '*' (an) und '.' (aus) in 81 Pixel umwandeln."""
+    """Convert a 9x9 pattern of '*' (on) and '.' (off) into 81 pixels."""
     return [c == "*" for c in pattern if c in ".*"]
 
 
 def rotate(pixels: list[bool]) -> list[bool]:
-    """Muster um 90° im Uhrzeigersinn drehen."""
+    """Rotate a pattern 90° clockwise."""
     return [pixels[(8 - col) * 9 + row] for row in range(9) for col in range(9)]
 
 
@@ -109,7 +109,7 @@ FLY_PATTERNS = {0: ARROW_LEFT, 1: ARROW_RIGHT}
 
 
 def level(percent: float) -> list[bool]:
-    """Pegel 0–100 % als Füllstand, Zeile für Zeile von unten nach oben."""
+    """Level 0–100 % as a fill gauge, row by row from bottom to top."""
     pixels = [False] * 81
     for k in range(round(percent / 100 * 81)):
         pixels[(8 - k // 9) * 9 + k % 9] = True
@@ -117,7 +117,7 @@ def level(percent: float) -> list[bool]:
 
 
 def matrix_bytes(pixels: list[bool], brightness: int = 255, seconds: float = 3.0) -> bytes:
-    """81 Pixel als 13 Bytes: 81 Bit Pixel, dann Helligkeit, dann Anzeigedauer in 1/10 s."""
+    """81 pixels as 13 bytes: 81 pixel bits, then brightness, then display time in 1/10 s."""
     data = bytearray(11)
     for i, on in enumerate(pixels):
         if on:
@@ -126,7 +126,7 @@ def matrix_bytes(pixels: list[bool], brightness: int = 255, seconds: float = 3.0
 
 
 class Display:
-    """Schreibt Bilder auf die LED-Matrix; kommen sie schneller als BLE schafft, gewinnt das neueste."""
+    """Writes images to the LED matrix; if they arrive faster than BLE can deliver, the newest wins."""
 
     def __init__(self, client: BleakClient):
         self.client = client
@@ -150,9 +150,9 @@ class Display:
 
 
 class ButtonGestures:
-    """Macht aus Drücken/Loslassen kurze, lange und doppelte Drücke.
+    """Turns press/release into short, long and double presses.
 
-    Ein Druck, der lang gehalten oder zum Drehen genutzt wurde, zählt nicht als Klick.
+    A press that was held long or used for rotating does not count as a click.
     """
 
     def __init__(self, emit):
@@ -214,7 +214,7 @@ async def main():
         battery = (await client.read_gatt_char(BATTERY))[0]
         print(f"Verbunden. Akku: {battery} %")
         display = Display(client)
-        # Erst die eigene Verbindungsanimation (Haken) des Nuimo abwarten
+        # Wait for the Nuimo's own connection animation (check mark) first
         await asyncio.sleep(2)
         display.show(SMILEY)
 
