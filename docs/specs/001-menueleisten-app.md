@@ -50,8 +50,11 @@ nuimo/
       Info.plist
       default-config.toml
     Sources/NuimoBar/
-      NuimoBarApp.swift                @main, MenuBarExtra, Menüinhalt
+      NuimoBarApp.swift                @main, MenuBarExtra, Symbol in der Menüleiste
+      MenuContent.swift                Menüinhalt
+      AppModel.swift                   setzt die Teile beim Start zusammen
       AppState.swift                   beobachtbarer Zustand für das Menü
+      ConnectionStatus.swift           Verbindungszustand und Statuszeile
       NuimoDevice.swift                CoreBluetooth: Suche, Verbindung, Notifications, Akku
       NuimoProtocol.swift              UUIDs, Dekodierung der Sensordaten
       Gesture.swift                    Auslöser-Ereignisse und ihr Bild auf der Matrix

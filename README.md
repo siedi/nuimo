@@ -35,7 +35,7 @@ Der Nuimo erlaubt nur eine Verbindung gleichzeitig. Läuft die App oder ein ande
 
 ## Menüleisten-App
 
-Im Aufbau nach [Spec 001](docs/specs/001-menueleisten-app.md) §10. Die App startet und sitzt in der Menüleiste, verbindet sich aber noch nicht mit dem Nuimo. Voraussetzung ist Xcode mit Swift 6, zum Signieren ein Zertifikat „Apple Development“.
+Im Aufbau nach [Spec 001](docs/specs/001-menueleisten-app.md) §10. Die App verbindet sich mit dem Nuimo und zeigt Verbindung, Akku und die letzte Geste. Aktionen führt sie noch nicht aus. Voraussetzung ist Xcode mit Swift 6, zum Signieren ein Zertifikat „Apple Development“.
 
 ```sh
 cd app

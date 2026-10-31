@@ -1,23 +1,24 @@
-import AppKit
 import SwiftUI
 
 /// Entry point: a menu bar extra without a Dock icon (`LSUIElement` in Info.plist).
 @main
 struct NuimoBarApp: App {
+    @NSApplicationDelegateAdaptor private var model: AppModel
+
     var body: some Scene {
         MenuBarExtra {
-            Text(String(localized: "NuimoBar \(Self.version)"))
-            Divider()
-            Button(String(localized: "Beenden")) {
-                NSApplication.shared.terminate(nil)
-            }
-            .keyboardShortcut("q")
+            MenuContent(state: model.state, log: model.log)
         } label: {
-            Image(systemName: "dial.low")
+            MenuBarIcon(state: model.state)
         }
     }
+}
 
-    private static var version: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "–"
+/// Symbol in the menu bar; filled while the Nuimo is connected.
+private struct MenuBarIcon: View {
+    let state: AppState
+
+    var body: some View {
+        Image(systemName: state.connection.isConnected ? "dial.low.fill" : "dial.low")
     }
 }

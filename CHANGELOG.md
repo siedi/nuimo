@@ -8,6 +8,8 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format folgt [Keep a Chang
 
 - Menüleisten-App: Gerüst unter `app/` mit SwiftPM-Paket, `Info.plist`, `default-config.toml` und `build.sh`, das baut, bündelt und mit „Apple Development“ signiert. Die App startet als Menüleisten-Symbol ohne Dock-Symbol.
 - Menüleisten-App: Nuimo-Protokoll, Bilder und Pegel für die LED-Matrix, Display-Warteschlange und Tastengesten, mit Tests. Die Bytes der Matrix stimmen mit `nuimo.py` überein.
+- Menüleisten-App: Bluetooth-Verbindung zum Nuimo. Beim ersten Mal wird nach dem Namen gesucht, danach bleibt ein Verbindungswunsch offen, bis der Nuimo erreichbar ist. Das Menü zeigt Verbindung und Akku, nach dem Verbinden erscheint der Smiley. Gesten erscheinen vorerst nur im Menü und auf der Matrix.
+- Menüleisten-App: abschaltbares Debug-Log unter `~/Library/Logs/NuimoBar/debug.log`, im Menü ein- und auszuschalten und zu öffnen.
 - Projektgrundlage: Git-Repository, README, Konventionen in `CLAUDE.md`, Referenz der Belegung in `docs/config.md`.
 - Spec 001 für die Menüleisten-App in Swift, mit MIDI-Ausgang für Resolume und Modi.
 - Python-Prototyp: `nuimo.py` als Testwerkzeug, `bridge.py` als Dienst mit App-Profilen, `config.toml` mit Standard- und TradingView-Belegung.
