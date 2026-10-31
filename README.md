@@ -5,7 +5,7 @@ Der Senic Nuimo ist ein Drehknopf mit Taste, Touch-Oberfläche, Gestensensor und
 Es gibt zwei Teile:
 
 - **Python-Prototyp** (`nuimo.py`, `bridge.py`): läuft im Terminal und dient zum schnellen Ausprobieren am Gerät.
-- **Menüleisten-App** (`app/`, geplant): native Swift-App mit Verbindungsanzeige, Login-Start und MIDI-Ausgang. Siehe [Spec 001](docs/specs/001-menueleisten-app.md).
+- **Menüleisten-App** (`app/`, im Aufbau): native Swift-App mit Verbindungsanzeige, Login-Start und MIDI-Ausgang. Siehe [Spec 001](docs/specs/001-menueleisten-app.md).
 
 ## Aufbau
 
@@ -15,7 +15,7 @@ bridge.py               Dienst: setzt Gesten je nach App in Aktionen um
 config.toml             Belegung für bridge.py
 docs/config.md          Referenz der Belegung
 docs/specs/             Specs, fortlaufend nummeriert
-app/                    Menüleisten-App (geplant)
+app/                    Menüleisten-App (im Aufbau)
 CHANGELOG.md            Änderungen
 CLAUDE.md               Konventionen für die Entwicklung
 ```
@@ -35,7 +35,7 @@ Der Nuimo erlaubt nur eine Verbindung gleichzeitig. Läuft die App oder ein ande
 
 ## Menüleisten-App
 
-Geplant, noch nicht umgesetzt. Bauen und Installieren werden so aussehen:
+Im Aufbau nach [Spec 001](docs/specs/001-menueleisten-app.md) §10. Die App startet und sitzt in der Menüleiste, verbindet sich aber noch nicht mit dem Nuimo. Voraussetzung ist Xcode mit Swift 6, zum Signieren ein Zertifikat „Apple Development“.
 
 ```sh
 cd app

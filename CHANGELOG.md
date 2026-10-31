@@ -6,6 +6,7 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format folgt [Keep a Chang
 
 ### Hinzugefügt
 
+- Menüleisten-App: Gerüst unter `app/` mit SwiftPM-Paket, `Info.plist`, `default-config.toml` und `build.sh`, das baut, bündelt und mit „Apple Development“ signiert. Die App startet als Menüleisten-Symbol ohne Dock-Symbol.
 - Projektgrundlage: Git-Repository, README, Konventionen in `CLAUDE.md`, Referenz der Belegung in `docs/config.md`.
 - Spec 001 für die Menüleisten-App in Swift, mit MIDI-Ausgang für Resolume und Modi.
 - Python-Prototyp: `nuimo.py` als Testwerkzeug, `bridge.py` als Dienst mit App-Profilen, `config.toml` mit Standard- und TradingView-Belegung.

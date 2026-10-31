@@ -2,7 +2,7 @@
 
 Zu Beginn jeder Session `.claude/handoff.md` lesen, falls vorhanden. Sie entsteht mit `/feierabend` und wird nicht committet.
 
-Senic Nuimo als Controller für den Mac. Der Python-Prototyp (`nuimo.py`, `bridge.py`) läuft. Die Menüleisten-App in Swift unter `app/` ist in Planung, siehe [Spec 001](docs/specs/001-menueleisten-app.md). Überblick und Gerätewissen stehen im [README](README.md), das Format der Belegung in [docs/config.md](docs/config.md).
+Senic Nuimo als Controller für den Mac. Der Python-Prototyp (`nuimo.py`, `bridge.py`) läuft. Die Menüleisten-App in Swift unter `app/` ist im Aufbau, siehe [Spec 001](docs/specs/001-menueleisten-app.md). Überblick und Gerätewissen stehen im [README](README.md), das Format der Belegung in [docs/config.md](docs/config.md).
 
 ## Sprache
 

@@ -1,0 +1,69 @@
+# Nuimo-Belegung für NuimoBar. Änderungen gelten sofort, ohne Neustart.
+# Enthält die Datei einen Fehler, bleibt die vorige Belegung aktiv und das Menü zeigt den Fehler.
+#
+# Reihenfolge: aktiver Modus → Profil der App, die vorne ist → [default].
+# Das erste Profil, das ein Ereignis enthält, entscheidet. "none" legt ein Ereignis bewusst still.
+#
+# Ereignisse:
+#   press, long_press, double_press
+#   hold                                            → Drücken und Loslassen getrennt, schaltet press,
+#                                                     long_press und double_press ab
+#   swipe_left, swipe_right, swipe_up, swipe_down
+#   touch_left, touch_right, touch_top, touch_bottom
+#   longtouch_left, longtouch_right, longtouch_top, longtouch_bottom
+#   fly_left, fly_right
+#   rotate, rotate_pressed                          → fortlaufend: "volume", "scroll" oder "midi:cc:…"
+#   rotate_left, rotate_right,                      → schrittweise, z. B. mit Tastenkürzeln
+#   rotate_pressed_left, rotate_pressed_right
+#
+# Aktionen:
+#   "keys:opt+return"        Tastenkürzel aus cmd, shift, ctrl, opt und einer Taste
+#   "media:playpause"        Medientaste: playpause, next, previous, mute
+#   "volume"                 Systemlautstärke, mit Pegel auf der Matrix (nur rotate)
+#   "scroll"                 Mausrad an der Mausposition (nur rotate), auch mit Tasten, z. B. "scroll:ctrl+opt"
+#   "shell:…"                Shell-Befehl, z. B. "shell:shortcuts run 'Licht an'"
+#   "midi:note:36"           Note; bei hold gehalten, solange gedrückt
+#   "midi:cc:20"             CC; bei rotate absolut 0–127, bei hold 127/0, sonst kurz 127
+#   "midi:cc:21:relative"    CC relativ (nur rotate), Kodierung nach midi_relative
+#   "midi:cc:22=64"          CC mit festem Wert
+#   "midi:pc:0"              Program Change
+#   "mode:Resolume"          Modus einschalten, auch "mode:off" und "mode:toggle:Resolume"
+#   "none"                   nichts tun, auch nicht das, was in einem folgenden Profil steht
+#
+# MIDI-Aktionen können mit @<kanal> einen eigenen Kanal bekommen, z. B. "midi:note:36@10".
+#
+# Apps werden über ihren Namen (wie im Dock) oder ihre Bundle-ID erkannt, Namen mit Leerzeichen in
+# Anführungszeichen: [apps."Google Chrome"]. Buchstabentasten folgen der US-Tastaturposition: auf
+# deutscher Tastatur sind y und z vertauscht.
+
+[settings]
+scroll_speed = 0.5      # Pixel pro Drehwert; negativ kehrt die Richtung um
+rotate_step = 300       # Drehwert pro Schritt bei rotate_left/right (volle Umdrehung etwa 2650)
+midi_channel = 1        # MIDI-Kanal 1–16, wenn eine Aktion keinen eigenen angibt
+midi_cc_per_turn = 127  # Änderung eines CC-Werts pro voller Umdrehung
+midi_relative = "twos"  # relative CCs: "twos" (1 = +1, 127 = −1) oder "offset" (65 = +1, 63 = −1)
+
+[default]
+rotate = "volume"
+press = "media:playpause"
+double_press = "media:mute"
+swipe_left = "media:previous"
+swipe_right = "media:next"
+# longtouch_top = "mode:toggle:Resolume"  # Modus Resolume per Geste schalten, siehe unten
+
+[apps.TradingView]
+rotate = "scroll"
+press = "keys:opt+return"      # aktives Chart im Layout maximieren / zurück
+swipe_right = "keys:tab"       # nächstes Chart
+swipe_left = "keys:shift+tab"  # voriges Chart
+
+# Beispiel für einen Modus, der unabhängig von der App gilt. Zum Ausprobieren die Rauten entfernen.
+# Ein- und ausschalten per Menü oder, mit der Zeile in [default], mit langem Berühren oben.
+#
+# [modes.Resolume]
+# rotate = "midi:cc:20"                  # z. B. Opacity der Ebene
+# rotate_pressed = "midi:cc:21:relative" # z. B. Effektstärke, in Resolume auf „Relative“ stellen
+# hold = "midi:note:40"                  # Flash, solange gedrückt
+# swipe_right = "midi:note:36"           # nächster Clip
+# swipe_left = "midi:note:37"            # voriger Clip
+# longtouch_top = "mode:toggle:Resolume"

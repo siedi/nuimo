@@ -1,6 +1,6 @@
 # Spec 001: Menüleisten-App
 
-Status: Entwurf · Stand: 2026-10-31
+Status: In Arbeit · Stand: 2026-10-31
 
 ## 1. Ziel und Rahmen
 
