@@ -1,0 +1,40 @@
+# Nuimo-Belegung pro App. Änderungen gelten sofort, ohne Neustart.
+#
+# Ereignisse:
+#   press, long_press, double_press
+#   swipe_left, swipe_right, swipe_up, swipe_down
+#   touch_left, touch_right, touch_top, touch_bottom
+#   longtouch_left, longtouch_right, longtouch_top, longtouch_bottom
+#   fly_left, fly_right
+#   rotate, rotate_pressed                          → fortlaufend: "volume" oder "scroll"
+#   rotate_left, rotate_right,                      → schrittweise, z. B. mit Tastenkürzeln
+#   rotate_pressed_left, rotate_pressed_right
+#
+# Aktionen:
+#   "keys:opt+return"   Tastenkürzel aus cmd, shift, ctrl, opt und einer Taste
+#   "media:playpause"   Medientaste: playpause, next, previous, mute
+#   "volume"            Systemlautstärke, mit Pegel auf der Matrix (nur rotate)
+#   "scroll"            Mausrad an der Mausposition (nur rotate), auch mit Tasten, z. B. "scroll:ctrl+opt"
+#   "shell:…"           Shell-Befehl, z. B. "shell:shortcuts run 'Licht an'"
+#   "none"              nichts tun, auch nicht das, was im Standardprofil steht
+#
+# Apps werden über ihren Namen (wie im Dock) oder ihre Bundle-ID erkannt, Namen mit Leerzeichen in
+# Anführungszeichen: [apps."Google Chrome"]. Was ein App-Profil nicht belegt, kommt aus [default].
+# Buchstabentasten folgen der US-Tastaturposition: auf deutscher Tastatur sind y und z vertauscht.
+
+[settings]
+scroll_speed = 0.5  # Pixel pro Drehwert; negativ kehrt die Richtung um
+rotate_step = 300   # Drehwert pro Schritt bei rotate_left/right (volle Umdrehung etwa 2650)
+
+[default]
+rotate = "volume"
+press = "media:playpause"
+double_press = "media:mute"
+swipe_left = "media:previous"
+swipe_right = "media:next"
+
+[apps.TradingView]
+rotate = "scroll"
+press = "keys:opt+return"      # aktives Chart im Layout maximieren / zurück
+swipe_right = "keys:tab"        # nächstes Chart
+swipe_left = "keys:shift+tab"  # voriges Chart
