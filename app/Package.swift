@@ -13,5 +13,9 @@ let package = Package(
             name: "NuimoBar",
             dependencies: ["TOMLKit"]
         ),
+        .testTarget(
+            name: "NuimoBarTests",
+            dependencies: ["NuimoBar"]
+        ),
     ]
 )

@@ -54,8 +54,12 @@ nuimo/
       AppState.swift                   beobachtbarer Zustand für das Menü
       NuimoDevice.swift                CoreBluetooth: Suche, Verbindung, Notifications, Akku
       NuimoProtocol.swift              UUIDs, Dekodierung der Sensordaten
-      Matrix.swift                     Muster, Pegel, Bytes, Display-Warteschlange
+      Gesture.swift                    Auslöser-Ereignisse und ihr Bild auf der Matrix
+      MatrixImage.swift                Muster, Pegel, Bytes
+      MatrixDisplay.swift              Display-Warteschlange
       ButtonGestures.swift             kurzer, langer, doppelter Druck, hold
+      Scheduler.swift                  Zeitgeber als Protokoll, damit Tests ohne Warten auskommen
+      MainScheduler.swift              Zeitgeber mit echter Zeit
       Config.swift                     TOML laden, neu laden, Profile auflösen
       Controller.swift                 Ereignis → Profil → Aktion
       Actions.swift                    Tasten, Medientasten, Scrollen, Shell
