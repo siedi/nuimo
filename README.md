@@ -9,7 +9,7 @@ I found my old Nuimo in a box in the basement. Senic stopped supporting it long 
 ## Parts
 
 - **Python prototype** (`nuimo.py`, `bridge.py`): runs in the terminal and is meant for quick experiments with the device.
-- **Menu bar app** (`app/`, work in progress): native Swift app with connection status, launch at login and MIDI output. See [Spec 001](docs/specs/001-menu-bar-app.md).
+- **Menu bar app** (`app/`, work in progress): native Swift app with connection status, launch at login and MIDI output, in English and German. See [Spec 001](docs/specs/001-menu-bar-app.md).
 
 ## Layout
 

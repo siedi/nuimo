@@ -6,8 +6,8 @@ Senic Nuimo as a controller for the Mac. The Python prototype (`nuimo.py`, `brid
 
 ## Language
 
-- **English:** everything in the repository: code, comments, docs (README, `docs/`, CHANGELOG), commit messages, UI texts (menu, messages, terminal output of the scripts), comments in `config.toml` and `default-config.toml`, debug log messages.
-- **German:** only the conversation with the maintainer.
+- **English:** everything in the repository: code, comments, docs (README, `docs/`, CHANGELOG), commit messages, UI texts in the source (menu, messages, terminal output of the scripts), comments in `config.toml` and `default-config.toml`, debug log messages.
+- **German:** the conversation with the maintainer and the German translations in the String Catalogs.
 
 ## Markdown
 
@@ -31,7 +31,7 @@ One paragraph is one line, one list item as well. No hard line wraps.
 - No force unwraps, except for constants and in tests.
 - One building block per file.
 - Tests with Swift Testing (`import Testing`), run with `swift test` in `app/`.
-- UI texts via `String(localized:)`, `defaultLocalization` is `"en"`.
+- UI texts via `String(localized:)` in English, `defaultLocalization` is `"en"`. The German translation goes into `app/Resources/Localizable.xcstrings` (`InfoPlist.xcstrings` for `Info.plist` texts). `build.sh` adds new strings to the catalog and warns about missing translations; fill them in before committing.
 - Build with `app/build.sh`, not just `swift build`, so the bundle and signature are right.
 
 ## Python

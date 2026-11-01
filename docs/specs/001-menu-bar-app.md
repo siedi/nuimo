@@ -48,6 +48,8 @@ nuimo/
     build.sh                           builds, bundles, signs; "install" copies to /Applications
     Resources/
       Info.plist
+      InfoPlist.xcstrings              German text for the Bluetooth prompt
+      Localizable.xcstrings            String Catalog with the German menu texts
       default-config.toml
     Sources/NuimoBar/
       NuimoBarApp.swift                @main, MenuBarExtra, menu bar icon
@@ -235,7 +237,7 @@ The active mode persists across a restart of the app. If it is missing after the
 - “Launch at login” uses `SMAppService.mainApp`.
 - “Debug log” writes raw data, gestures, profile resolution, actions, MIDI bytes and errors to the log file. “Open log …” opens it.
 
-Menu texts are in English and go through `String(localized:)`.
+Menu texts are in English and go through `String(localized:)`. The app is localized into German: the translations are in the String Catalog `app/Resources/Localizable.xcstrings`, the Bluetooth prompt from `Info.plist` in `InfoPlist.xcstrings`. macOS picks the language from the system settings; under System Settings › General › Language & Region › Applications it can be set per app. The debug log and the messages from parsing `config.toml` stay in English.
 
 ## 8. Test concept
 
@@ -273,7 +275,8 @@ See section 11. Anything that needs Bluetooth, permissions, other apps or Resolu
 
 1. `swift build -c release`.
 2. Assemble `build/NuimoBar.app` from the binary, `Info.plist` and `default-config.toml`.
-3. Sign with the “Apple Development” identity found via `security find-identity`. Without a matching identity, sign ad hoc and print a warning.
+3. Localize: sync `Localizable.xcstrings` with the `.stringsdata` files the compiler writes for `String(localized:)` (new strings are added, removed ones marked stale), warn about strings without a German translation, compile both catalogs into `en.lproj` and `de.lproj` with `xcstringstool`.
+4. Sign with the “Apple Development” identity found via `security find-identity`. Without a matching identity, sign ad hoc and print a warning.
 
 `app/build.sh install` also copies the app to `/Applications`. This is needed for a reliable launch at login.
 
@@ -307,6 +310,7 @@ The script is structured so that Developer ID and notarization can be added late
 - [ ] Resolume: check relative CC in “Relative” mode and set the matching encoding as default.
 - [ ] Switch mode “Resolume” on and off from the menu and with a gesture while another app is in front → MIDI arrives.
 - [ ] After restarting the app, the mode is still active and Resolume recognizes its mappings.
+- [ ] Mac set to German, or NuimoBar set to German under Language & Region › Applications → menu and Bluetooth prompt are in German, with English otherwise.
 - [ ] Quit the app → `uv run bridge.py` connects as before.
 
 ## 12. Open points

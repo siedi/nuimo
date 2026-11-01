@@ -1,0 +1,196 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Bluetooth is off": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bluetooth ist aus"
+          }
+        }
+      }
+    },
+    "Bluetooth not allowed": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bluetooth nicht erlaubt"
+          }
+        }
+      }
+    },
+    "Bluetooth unavailable": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bluetooth nicht verfügbar"
+          }
+        }
+      }
+    },
+    "Connected": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbunden"
+          }
+        }
+      }
+    },
+    "Connected · Battery %lld %%": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbunden · Akku %lld %%"
+          }
+        }
+      }
+    },
+    "Debug log": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Debug-Log"
+          }
+        }
+      }
+    },
+    "Edit mapping …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belegung bearbeiten …"
+          }
+        }
+      }
+    },
+    "File not found": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datei nicht gefunden"
+          }
+        }
+      }
+    },
+    "Last gesture: %@ (not mapped)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letzte Geste: %@ (nicht belegt)"
+          }
+        }
+      }
+    },
+    "Last gesture: %@ → %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letzte Geste: %@ → %@"
+          }
+        }
+      }
+    },
+    "Line %lld, column %lld: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeile %lld, Spalte %lld: %@"
+          }
+        }
+      }
+    },
+    "Mode": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modus"
+          }
+        }
+      }
+    },
+    "Mode: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modus: %@"
+          }
+        }
+      }
+    },
+    "Open log …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log öffnen …"
+          }
+        }
+      }
+    },
+    "Profile: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil: %@"
+          }
+        }
+      }
+    },
+    "Profile: Default": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil: Standard"
+          }
+        }
+      }
+    },
+    "Quit": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beenden"
+          }
+        }
+      }
+    },
+    "Searching for Nuimo … (press once)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suche Nuimo … (einmal drücken)"
+          }
+        }
+      }
+    },
+    "⚠ Error in config.toml: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚠ Fehler in config.toml: %@"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

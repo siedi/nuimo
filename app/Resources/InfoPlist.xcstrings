@@ -1,0 +1,24 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSBluetoothAlwaysUsageDescription": {
+      "comment": "Privacy - Bluetooth Always Usage Description",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NuimoBar verbindet sich per Bluetooth mit dem Senic Nuimo, um Drehen, Drücken und Wischen zu empfangen und die LED-Matrix anzusteuern."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NuimoBar connects to the Senic Nuimo over Bluetooth to receive turns, presses and swipes and to drive its LED matrix."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

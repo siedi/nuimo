@@ -14,6 +14,7 @@ All notable changes to this project. The format follows [Keep a Changelog](https
 - Menu bar app: event `hold` for held notes and CCs.
 - Menu bar app: modes `[modes.*]`, switched via the “Mode” submenu (only if the file contains modes) or with `mode:<Name>`, `mode:off` and `mode:toggle:<Name>`, with “M” and “X” on the matrix. The active mode survives a restart.
 - Menu bar app: optional debug log at `~/Library/Logs/NuimoBar/debug.log`, switched on and off and opened from the menu.
+- Menu bar app: German localization via the String Catalog `Localizable.xcstrings`, including the Bluetooth prompt. `build.sh` adds new strings from the source to the catalog and warns about missing translations.
 - MIT license.
 - Project basics: Git repository, README, conventions in `CLAUDE.md`, mapping reference in `docs/config.md`.
 - Spec 001 for the Swift menu bar app, with MIDI output for Resolume and modes.
