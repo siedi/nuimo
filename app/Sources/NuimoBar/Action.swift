@@ -1,4 +1,4 @@
-/// An action from `config.toml`, e.g. `keys:opt+return` or `volume`.
+/// An action from `config.toml`, e.g. `keys:opt+return`, `volume` or `midi:note:36`.
 enum Action: Equatable, Sendable {
     case keys(KeyShortcut)
     case media(MediaKey)
@@ -7,6 +7,8 @@ enum Action: Equatable, Sendable {
     case volume
     /// Continuous: scroll wheel at the mouse position, optionally with modifiers.
     case scroll(KeyModifiers)
+    case midi(MIDIAction)
+    case mode(ModeAction)
     /// Do nothing, and do not fall back to later profiles.
     case none
 
@@ -39,6 +41,10 @@ enum Action: Equatable, Sendable {
             } else {
                 self = .scroll([])
             }
+        case "midi":
+            self = .midi(try MIDIAction(parsing: try Self.required(argument, for: "midi")))
+        case "mode":
+            self = .mode(try ModeAction(parsing: try Self.required(argument, for: "mode")))
         case "none":
             guard argument == nil else { throw .unexpectedArgument("none") }
             self = .none
@@ -51,15 +57,26 @@ enum Action: Equatable, Sendable {
     var isContinuous: Bool {
         switch self {
         case .volume, .scroll, .none: true
-        case .keys, .media, .shell: false
+        case .midi(let midi): midi.isContinuous
+        case .keys, .media, .shell, .mode: false
         }
     }
 
     /// Whether the action works for discrete events like `press` or `rotate_left`.
     var isTrigger: Bool {
         switch self {
-        case .keys, .media, .shell, .none: true
+        case .keys, .media, .shell, .mode, .none: true
+        case .midi(let midi): midi.isTrigger
         case .volume, .scroll: false
+        }
+    }
+
+    /// Whether the action works for `hold`.
+    var isHold: Bool {
+        switch self {
+        case .none: true
+        case .midi(let midi): midi.isHold
+        case .keys, .media, .shell, .mode, .volume, .scroll: false
         }
     }
 

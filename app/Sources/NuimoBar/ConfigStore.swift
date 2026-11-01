@@ -9,7 +9,7 @@ final class ConfigStore {
 
     let fileURL: URL
     private(set) var config = Config()
-    /// German text for the menu, or `nil` if the file loaded fine.
+    /// Text for the menu, or `nil` if the file loaded fine.
     private(set) var error: String? {
         didSet {
             if error != oldValue {
@@ -18,6 +18,8 @@ final class ConfigStore {
         }
     }
     var onErrorChange: ((String?) -> Void)?
+    /// Called after the file was loaded successfully.
+    var onReload: ((Config) -> Void)?
 
     private let log: DebugLog?
     private var loadedModificationDate: Date?
@@ -56,7 +58,7 @@ final class ConfigStore {
 
         guard modificationDate != nil, let text = try? String(contentsOf: fileURL, encoding: .utf8) else {
             log?("Config not readable at \(fileURL.path), keeping the previous mapping")
-            error = String(localized: "Datei nicht gefunden")
+            error = String(localized: "File not found")
             return
         }
         do throws(Config.SyntaxError) {
@@ -66,6 +68,7 @@ final class ConfigStore {
             for warning in config.warnings {
                 log?("Config warning: \(warning)")
             }
+            onReload?(config)
         } catch {
             log?("Config syntax error, keeping the previous mapping: \(error.message)")
             self.error = error.localizedDescription

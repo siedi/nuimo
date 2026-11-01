@@ -7,7 +7,12 @@ struct NuimoBarApp: App {
 
     var body: some Scene {
         MenuBarExtra {
-            MenuContent(state: model.state, log: model.log, configURL: model.configStore.fileURL)
+            MenuContent(
+                state: model.state,
+                log: model.log,
+                configURL: model.configStore.fileURL,
+                selectMode: { model.selectMode($0) }
+            )
         } label: {
             MenuBarIcon(state: model.state)
         }

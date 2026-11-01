@@ -9,4 +9,5 @@ protocol Outputs {
     /// output device has no volume control.
     func changeVolume(by percent: Double) -> Double?
     func showMatrix(_ image: MatrixImage, seconds: Double)
+    func sendMIDI(_ message: MIDIMessage)
 }

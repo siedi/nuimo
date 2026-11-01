@@ -1,3 +1,4 @@
+import Foundation
 import TOMLKit
 
 /// The parsed mapping from `config.toml`: settings, the standard profile, app profiles and modes.
@@ -8,9 +9,9 @@ struct Config: Equatable, Sendable {
         var column: Int
         var message: String
 
-        /// German text for the menu.
+        /// Text for the menu.
         var localizedDescription: String {
-            String(localized: "Zeile \(line), Spalte \(column): \(message)")
+            String(localized: "Line \(line), column \(column): \(message)")
         }
     }
 
@@ -45,6 +46,11 @@ struct Config: Equatable, Sendable {
         modes = parseProfiles(table["modes"]?.table, section: "modes")
     }
 
+    /// Names of all modes, sorted for the menu.
+    var modeNames: [String] {
+        modes.keys.sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+    }
+
     /// Profiles to search for an event, in order: active mode, profile of the app in front, standard.
     func profiles(for app: FrontmostApp?, mode: String?) -> [Profile] {
         var chain: [Profile] = []
@@ -74,6 +80,24 @@ struct Config: Equatable, Sendable {
                     result.rotateStep = number
                 } else {
                     warnings.append("settings.rotate_step must be a positive number")
+                }
+            case "midi_channel":
+                if let number = value.int, (1...16).contains(number) {
+                    result.midiChannel = number
+                } else {
+                    warnings.append("settings.midi_channel must be a number from 1 to 16")
+                }
+            case "midi_cc_per_turn":
+                if let number = value.double ?? value.int.map(Double.init), number > 0 {
+                    result.midiCCPerTurn = number
+                } else {
+                    warnings.append("settings.midi_cc_per_turn must be a positive number")
+                }
+            case "midi_relative":
+                if let encoding = value.string.flatMap(MIDIRelativeEncoding.init(rawValue:)) {
+                    result.midiRelative = encoding
+                } else {
+                    warnings.append("settings.midi_relative must be \"twos\" or \"offset\"")
                 }
             default:
                 break

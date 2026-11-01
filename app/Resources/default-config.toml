@@ -1,47 +1,47 @@
-# Nuimo-Belegung für NuimoBar. Änderungen gelten sofort, ohne Neustart.
-# Enthält die Datei einen Fehler, bleibt die vorige Belegung aktiv und das Menü zeigt den Fehler.
+# Nuimo mapping for NuimoBar. Changes take effect immediately, without a restart.
+# If the file contains an error, the previous mapping stays active and the menu shows the error.
 #
-# Reihenfolge: aktiver Modus → Profil der App, die vorne ist → [default].
-# Das erste Profil, das ein Ereignis enthält, entscheidet. "none" legt ein Ereignis bewusst still.
+# Order: active mode → profile of the app in front → [default].
+# The first profile that contains an event decides. "none" deliberately silences an event.
 #
-# Ereignisse:
+# Events:
 #   press, long_press, double_press
-#   hold                                            → Drücken und Loslassen getrennt, schaltet press,
-#                                                     long_press und double_press ab
+#   hold                                            → press and release separately, turns off press,
+#                                                     long_press and double_press
 #   swipe_left, swipe_right, swipe_up, swipe_down
 #   touch_left, touch_right, touch_top, touch_bottom
 #   longtouch_left, longtouch_right, longtouch_top, longtouch_bottom
 #   fly_left, fly_right
-#   rotate, rotate_pressed                          → fortlaufend: "volume", "scroll" oder "midi:cc:…"
-#   rotate_left, rotate_right,                      → schrittweise, z. B. mit Tastenkürzeln
+#   rotate, rotate_pressed                          → continuous: "volume", "scroll" or "midi:cc:…"
+#   rotate_left, rotate_right,                      → in steps, e.g. with keyboard shortcuts
 #   rotate_pressed_left, rotate_pressed_right
 #
-# Aktionen:
-#   "keys:opt+return"        Tastenkürzel aus cmd, shift, ctrl, opt und einer Taste
-#   "media:playpause"        Medientaste: playpause, next, previous, mute
-#   "volume"                 Systemlautstärke, mit Pegel auf der Matrix (nur rotate)
-#   "scroll"                 Mausrad an der Mausposition (nur rotate), auch mit Tasten, z. B. "scroll:ctrl+opt"
-#   "shell:…"                Shell-Befehl, z. B. "shell:shortcuts run 'Licht an'"
-#   "midi:note:36"           Note; bei hold gehalten, solange gedrückt
-#   "midi:cc:20"             CC; bei rotate absolut 0–127, bei hold 127/0, sonst kurz 127
-#   "midi:cc:21:relative"    CC relativ (nur rotate), Kodierung nach midi_relative
-#   "midi:cc:22=64"          CC mit festem Wert
+# Actions:
+#   "keys:opt+return"        keyboard shortcut from cmd, shift, ctrl, opt and one key
+#   "media:playpause"        media key: playpause, next, previous, mute
+#   "volume"                 system volume, with a level on the matrix (rotate only)
+#   "scroll"                 mouse wheel at the pointer (rotate only), also with keys, e.g. "scroll:ctrl+opt"
+#   "shell:…"                shell command, e.g. "shell:shortcuts run 'Lights on'"
+#   "midi:note:36"           note; with hold it is held while pressed
+#   "midi:cc:20"             CC; absolute 0–127 with rotate, 127/0 with hold, otherwise a short 127
+#   "midi:cc:21:relative"    relative CC (rotate only), encoded according to midi_relative
+#   "midi:cc:22=64"          CC with a fixed value
 #   "midi:pc:0"              Program Change
-#   "mode:Resolume"          Modus einschalten, auch "mode:off" und "mode:toggle:Resolume"
-#   "none"                   nichts tun, auch nicht das, was in einem folgenden Profil steht
+#   "mode:Resolume"          switch a mode on, also "mode:off" and "mode:toggle:Resolume"
+#   "none"                   do nothing, not even what a following profile contains
 #
-# MIDI-Aktionen können mit @<kanal> einen eigenen Kanal bekommen, z. B. "midi:note:36@10".
+# MIDI actions can get their own channel with @<channel>, e.g. "midi:note:36@10".
 #
-# Apps werden über ihren Namen (wie im Dock) oder ihre Bundle-ID erkannt, Namen mit Leerzeichen in
-# Anführungszeichen: [apps."Google Chrome"]. Buchstabentasten folgen der US-Tastaturposition: auf
-# deutscher Tastatur sind y und z vertauscht.
+# Apps are recognized by their name (as in the Dock) or their bundle ID. Names with spaces go in
+# quotes: [apps."Google Chrome"]. Letter keys follow the US keyboard position: on a German
+# keyboard, y and z are swapped.
 
 [settings]
-scroll_speed = 0.5      # Pixel pro Drehwert; negativ kehrt die Richtung um
-rotate_step = 300       # Drehwert pro Schritt bei rotate_left/right (volle Umdrehung etwa 2650)
-midi_channel = 1        # MIDI-Kanal 1–16, wenn eine Aktion keinen eigenen angibt
-midi_cc_per_turn = 127  # Änderung eines CC-Werts pro voller Umdrehung
-midi_relative = "twos"  # relative CCs: "twos" (1 = +1, 127 = −1) oder "offset" (65 = +1, 63 = −1)
+scroll_speed = 0.5      # pixels per rotation unit; negative reverses the direction
+rotate_step = 300       # rotation units per step for rotate_left/right (one full turn is about 2650)
+midi_channel = 1        # MIDI channel 1–16 used when an action does not specify one
+midi_cc_per_turn = 127  # change of a CC value per full turn
+midi_relative = "twos"  # relative CCs: "twos" (1 = +1, 127 = −1) or "offset" (65 = +1, 63 = −1)
 
 [default]
 rotate = "volume"
@@ -49,21 +49,21 @@ press = "media:playpause"
 double_press = "media:mute"
 swipe_left = "media:previous"
 swipe_right = "media:next"
-# longtouch_top = "mode:toggle:Resolume"  # Modus Resolume per Geste schalten, siehe unten
+# longtouch_top = "mode:toggle:Resolume"  # switch the Resolume mode with a gesture, see below
 
 [apps.TradingView]
 rotate = "scroll"
-press = "keys:opt+return"      # aktives Chart im Layout maximieren / zurück
-swipe_right = "keys:tab"       # nächstes Chart
-swipe_left = "keys:shift+tab"  # voriges Chart
+press = "keys:opt+return"      # maximize the active chart in the layout / back
+swipe_right = "keys:tab"       # next chart
+swipe_left = "keys:shift+tab"  # previous chart
 
-# Beispiel für einen Modus, der unabhängig von der App gilt. Zum Ausprobieren die Rauten entfernen.
-# Ein- und ausschalten per Menü oder, mit der Zeile in [default], mit langem Berühren oben.
+# Example of a mode that applies regardless of the app. Remove the # signs to try it.
+# Switch it on and off from the menu or, with the line in [default], with a long touch at the top.
 #
 # [modes.Resolume]
-# rotate = "midi:cc:20"                  # z. B. Opacity der Ebene
-# rotate_pressed = "midi:cc:21:relative" # z. B. Effektstärke, in Resolume auf „Relative“ stellen
-# hold = "midi:note:40"                  # Flash, solange gedrückt
-# swipe_right = "midi:note:36"           # nächster Clip
-# swipe_left = "midi:note:37"            # voriger Clip
+# rotate = "midi:cc:20"                  # e.g. layer opacity
+# rotate_pressed = "midi:cc:21:relative" # e.g. effect amount, set to "Relative" in Resolume
+# hold = "midi:note:40"                  # flash while held
+# swipe_right = "midi:note:36"           # next clip
+# swipe_left = "midi:note:37"            # previous clip
 # longtouch_top = "mode:toggle:Resolume"

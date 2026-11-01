@@ -65,7 +65,7 @@ struct ConfigTests {
             try Config(parsing: "[default]\npress = \"keys:a\n")
         } throws: { error in
             guard let error = error as? Config.SyntaxError else { return false }
-            return error.line == 2 && error.localizedDescription.hasPrefix("Zeile 2, Spalte")
+            return error.line == 2 && error.localizedDescription.hasPrefix("Line 2, column")
         }
     }
 

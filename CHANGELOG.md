@@ -1,20 +1,23 @@
 # Changelog
 
-Alle nennenswerten Änderungen an diesem Projekt. Das Format folgt [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die Versionen folgen [Semantic Versioning](https://semver.org/lang/de/). Die erste Version der App wird 0.1.0.
+All notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versions follow [Semantic Versioning](https://semver.org/). The first version of the app will be 0.1.0.
 
 ## [Unreleased]
 
-### Hinzugefügt
+### Added
 
-- Menüleisten-App: Gerüst unter `app/` mit SwiftPM-Paket, `Info.plist`, `default-config.toml` und `build.sh`, das baut, bündelt und mit „Apple Development“ signiert. Die App startet als Menüleisten-Symbol ohne Dock-Symbol.
-- Menüleisten-App: Nuimo-Protokoll, Bilder und Pegel für die LED-Matrix, Display-Warteschlange und Tastengesten, mit Tests. Die Bytes der Matrix stimmen mit `nuimo.py` überein.
-- Menüleisten-App: Bluetooth-Verbindung zum Nuimo. Beim ersten Mal wird nach dem Namen gesucht, danach bleibt ein Verbindungswunsch offen, bis der Nuimo erreichbar ist. Das Menü zeigt Verbindung und Akku, nach dem Verbinden erscheint der Smiley. Gesten erscheinen vorerst nur im Menü und auf der Matrix.
-- Menüleisten-App: Belegung aus `config.toml` mit Profilen nach App-Name oder Bundle-ID, Neuladen bei jeder Änderung und Fehleranzeige im Menü, wobei die alte Belegung aktiv bleibt. Tastenkürzel, Medientasten, Scrollen, Shell-Befehle und Lautstärke über CoreAudio, mit Bild oder Pegel auf der Matrix. Beim ersten Start wird die Standardbelegung angelegt und nach der Freigabe für Bedienungshilfen gefragt. Menüpunkt „Belegung bearbeiten …“.
-- Menüleisten-App: abschaltbares Debug-Log unter `~/Library/Logs/NuimoBar/debug.log`, im Menü ein- und auszuschalten und zu öffnen.
-- Projektgrundlage: Git-Repository, README, Konventionen in `CLAUDE.md`, Referenz der Belegung in `docs/config.md`.
-- Spec 001 für die Menüleisten-App in Swift, mit MIDI-Ausgang für Resolume und Modi.
-- Python-Prototyp: `nuimo.py` als Testwerkzeug, `bridge.py` als Dienst mit App-Profilen, `config.toml` mit Standard- und TradingView-Belegung.
+- Menu bar app: scaffold under `app/` with a SwiftPM package, `Info.plist`, `default-config.toml` and `build.sh`, which builds, bundles and signs with “Apple Development”. The app starts as a menu bar icon without a Dock icon.
+- Menu bar app: Nuimo protocol, images and levels for the LED matrix, display queue and button gestures, with tests. The matrix bytes match `nuimo.py`.
+- Menu bar app: Bluetooth connection to the Nuimo. The first time, it searches by name; after that a connection request stays open until the Nuimo is reachable. The menu shows connection and battery, and the smiley appears after connecting. For now, gestures only show up in the menu and on the matrix.
+- Menu bar app: mapping from `config.toml` with profiles by app name or bundle ID, reload on every change and an error line in the menu while the previous mapping stays active. Keyboard shortcuts, media keys, scrolling, shell commands and volume via CoreAudio, with an image or level on the matrix. On the first start the default mapping is installed and the app asks for the Accessibility permission. Menu item “Edit mapping …”.
+- Menu bar app: virtual MIDI source “Nuimo” with a fixed unique ID. Actions `midi:note`, `midi:cc` (absolute when turning, relative, fixed value, trigger), `midi:pc` with their own channel via `@`, settings `midi_channel`, `midi_cc_per_turn` and `midi_relative`.
+- Menu bar app: event `hold` for held notes and CCs.
+- Menu bar app: modes `[modes.*]`, switched via the “Mode” submenu (only if the file contains modes) or with `mode:<Name>`, `mode:off` and `mode:toggle:<Name>`, with “M” and “X” on the matrix. The active mode survives a restart.
+- Menu bar app: optional debug log at `~/Library/Logs/NuimoBar/debug.log`, switched on and off and opened from the menu.
+- Project basics: Git repository, README, conventions in `CLAUDE.md`, mapping reference in `docs/config.md`.
+- Spec 001 for the Swift menu bar app, with MIDI output for Resolume and modes.
+- Python prototype: `nuimo.py` as a test tool, `bridge.py` as a service with app profiles, `config.toml` with a default and a TradingView mapping.
 
-### Geändert
+### Changed
 
-- Kommentare und Docstrings im Python-Code auf Englisch. Die Ausgaben im Terminal bleiben deutsch.
+- Comments and docstrings in the Python code are in English. The terminal output stays German.

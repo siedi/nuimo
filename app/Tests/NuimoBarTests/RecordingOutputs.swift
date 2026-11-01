@@ -10,6 +10,7 @@ final class RecordingOutputs: Outputs {
         case shell(String)
         case volume(Double)
         case matrix(MatrixImage, Double)
+        case midi(MIDIMessage)
     }
 
     private(set) var calls: [Call] = []
@@ -45,5 +46,16 @@ final class RecordingOutputs: Outputs {
 
     func showMatrix(_ image: MatrixImage, seconds: Double) {
         calls.append(.matrix(image, seconds))
+    }
+
+    func sendMIDI(_ message: MIDIMessage) {
+        calls.append(.midi(message))
+    }
+
+    var midiMessages: [MIDIMessage] {
+        calls.compactMap {
+            if case .midi(let message) = $0 { return message }
+            return nil
+        }
     }
 }

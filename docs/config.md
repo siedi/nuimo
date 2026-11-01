@@ -1,155 +1,157 @@
-# Belegung (config.toml)
+# Mapping (config.toml)
 
-Diese Datei beschreibt das Format der Belegung verbindlich. Ändert sich das Format, wird zuerst diese Datei angepasst, dann `app/Resources/default-config.toml` und der CHANGELOG.
+This file is the binding description of the mapping format. If the format changes, this file is updated first, then `app/Resources/default-config.toml` and the CHANGELOG.
 
-Die Datei liegt an zwei Orten:
+The file lives in two places:
 
-- **App:** `~/Library/Application Support/NuimoBar/config.toml`. Das Menü öffnet sie über „Belegung bearbeiten …“.
-- **Python-Bridge:** `config.toml` neben `bridge.py`.
+- **App:** `~/Library/Application Support/NuimoBar/config.toml`. The menu opens it via “Edit mapping …”.
+- **Python bridge:** `config.toml` next to `bridge.py`.
 
-Änderungen gelten sofort, ohne Neustart. Enthält die Datei einen Syntaxfehler, bleibt die vorige Belegung aktiv. Die App zeigt den Fehler im Menü, `bridge.py` gibt ihn im Terminal aus.
+Changes take effect immediately, without a restart. If the file contains a syntax error, the previous mapping stays active. The app shows the error in the menu, `bridge.py` prints it in the terminal.
 
-Einige Angaben versteht nur die App, siehe [Unterschiede zu bridge.py](#unterschiede-zu-bridgepy).
+Some entries are only understood by the app, see [Differences from bridge.py](#differences-from-bridgepy).
 
-## Aufbau
+## Structure
 
 ```toml
-[settings]           # Einstellungen
-[default]            # Standardprofil
-[apps.TradingView]   # Profil für eine App
-[modes.Resolume]     # Modus, nur App
+[settings]           # settings
+[default]            # default profile
+[apps.TradingView]   # profile for one app
+[modes.Resolume]     # mode, app only
 ```
 
-Jedes Profil ordnet Ereignissen Aktionen zu: `ereignis = "aktion"`.
+Each profile maps events to actions: `event = "action"`.
 
-**Apps** werden über ihren Namen, wie er im Dock steht, oder über ihre Bundle-ID erkannt. Namen mit Leerzeichen stehen in Anführungszeichen: `[apps."Google Chrome"]`, `[apps."Resolume Arena"]`.
+**Apps** are recognized by their name as shown in the Dock, or by their bundle ID. Names with spaces go in quotes: `[apps."Google Chrome"]`, `[apps."Resolume Arena"]`.
 
-**Modi** gelten unabhängig von der App, die vorne ist. Sie werden im Menü oder per Aktion `mode:` eingeschaltet. Es ist höchstens ein Modus gleichzeitig aktiv.
+**Modes** apply regardless of the app in front. They are switched on from the menu or with a `mode:` action. At most one mode is active at a time. The active mode is kept across a restart of the app. If it disappears from the file, no mode is active. For `mode:<Name>` with a name the file does not contain, the app writes a message to the debug log and does nothing else.
 
-### Reihenfolge der Auflösung
+### Resolution order
 
-Für jedes Ereignis werden die Profile in dieser Reihenfolge durchsucht:
+For each event, the profiles are searched in this order:
 
-1. aktiver Modus, falls einer eingeschaltet ist
-2. Profil der App, die vorne ist
+1. the active mode, if one is switched on
+2. the profile of the app in front
 3. `[default]`
 
-Das erste Profil, das das Ereignis enthält, entscheidet. Mit `none` lässt sich ein Ereignis bewusst stilllegen, dann werden die folgenden Profile nicht mehr gefragt.
+The first profile that contains the event decides. `none` deliberately silences an event; the following profiles are then not consulted.
 
-Beim Drehen entscheidet das erste Profil, das entweder `rotate` oder `rotate_left`/`rotate_right` enthält. Für `rotate_pressed` gilt das entsprechend.
+For rotation, the first profile that contains either `rotate` or `rotate_left`/`rotate_right` decides. The same applies to `rotate_pressed`.
 
-## Einstellungen
+## Settings
 
-| Schlüssel | Standard | Bedeutung |
+| Key | Default | Meaning |
 |---|---|---|
-| `scroll_speed` | `0.5` | Pixel pro Drehwert bei `scroll`. Ein negativer Wert kehrt die Richtung um. |
-| `rotate_step` | `300` | Drehwert pro Schritt bei `rotate_left`/`rotate_right`. Eine volle Umdrehung ergibt etwa 2650. |
-| `midi_channel` | `1` | MIDI-Kanal 1–16, wenn eine Aktion keinen eigenen angibt. Nur App. |
-| `midi_cc_per_turn` | `127` | Änderung eines CC-Werts pro voller Umdrehung. Nur App. |
-| `midi_relative` | `"twos"` | Kodierung für relative CCs: `"twos"` (1 = +1, 127 = −1) oder `"offset"` (65 = +1, 63 = −1). Nur App. |
+| `scroll_speed` | `0.5` | Pixels per rotation unit for `scroll`. A negative value reverses the direction. |
+| `rotate_step` | `300` | Rotation units per step for `rotate_left`/`rotate_right`. One full turn is about 2650. |
+| `midi_channel` | `1` | MIDI channel 1–16 used when an action does not specify one. App only. |
+| `midi_cc_per_turn` | `127` | Change of a CC value per full turn. App only. |
+| `midi_relative` | `"twos"` | Encoding for relative CCs: `"twos"` (1 = +1, 127 = −1) or `"offset"` (65 = +1, 63 = −1). App only. |
 
-## Ereignisse
+## Events
 
-### Taste
+### Button
 
-| Ereignis | Auslöser |
+| Event | Trigger |
 |---|---|
-| `press` | kurzer Druck. Wird erst nach 0,35 s gemeldet, weil ein zweiter Druck folgen könnte. |
-| `double_press` | zwei kurze Drücke innerhalb von 0,35 s |
-| `long_press` | Taste 0,4 s gehalten |
-| `hold` | Drücken und Loslassen getrennt, ohne Verzögerung. Ist `hold` belegt, sind `press`, `double_press` und `long_press` abgeschaltet. Nur App. |
+| `press` | short press. Reported only after 0.35 s, because a second press might follow. |
+| `double_press` | two short presses within 0.35 s |
+| `long_press` | button held for 0.4 s |
+| `hold` | press and release separately, without delay. If `hold` is mapped, `press`, `double_press` and `long_press` are off. App only. |
 
-Wird während des Drückens gedreht, zählt der Druck nicht als `press` und nicht als `long_press`.
+If the knob is turned while the button is down, the press counts neither as `press` nor as `long_press`.
 
-### Wischen, Tippen, Hand
+### Swipe, touch, hand
 
-| Ereignis | Auslöser |
+| Event | Trigger |
 |---|---|
-| `swipe_left`, `swipe_right`, `swipe_up`, `swipe_down` | Wischen über die Oberfläche. Kommt nur an, wenn man ganz bis zum Rand wischt. |
-| `touch_left`, `touch_right`, `touch_top`, `touch_bottom` | kurzes Tippen an den Rand |
-| `longtouch_left`, `longtouch_right`, `longtouch_top`, `longtouch_bottom` | langes Berühren am Rand |
-| `fly_left`, `fly_right` | Hand über dem Nuimo nach links oder rechts bewegen |
+| `swipe_left`, `swipe_right`, `swipe_up`, `swipe_down` | swipe across the surface. Only registers if you swipe all the way to the edge. |
+| `touch_left`, `touch_right`, `touch_top`, `touch_bottom` | short tap on the edge |
+| `longtouch_left`, `longtouch_right`, `longtouch_top`, `longtouch_bottom` | long touch on the edge |
+| `fly_left`, `fly_right` | move a hand left or right above the Nuimo |
 
-### Drehen
+### Rotation
 
-| Ereignis | Auslöser |
+| Event | Trigger |
 |---|---|
-| `rotate` | Drehen, fortlaufend. Erlaubt: `volume`, `scroll`, `midi:cc`. |
-| `rotate_pressed` | Drehen bei gedrückter Taste, fortlaufend. Erlaubt wie bei `rotate`. |
-| `rotate_left`, `rotate_right` | Drehen in Schritten von `rotate_step`. Erlaubt sind alle Aktionen für Auslöser. |
-| `rotate_pressed_left`, `rotate_pressed_right` | wie oben, bei gedrückter Taste |
+| `rotate` | turning, continuous. Allowed: `volume`, `scroll`, `midi:cc`. |
+| `rotate_pressed` | turning with the button down, continuous. Allowed as for `rotate`. |
+| `rotate_left`, `rotate_right` | turning in steps of `rotate_step`. All trigger actions are allowed. |
+| `rotate_pressed_left`, `rotate_pressed_right` | as above, with the button down |
 
-## Aktionen
+## Actions
 
-### Für Auslöser
+### For triggers
 
-Auslöser sind alle Ereignisse außer `rotate`, `rotate_pressed` und `hold`.
+Triggers are all events except `rotate`, `rotate_pressed` and `hold`.
 
-| Aktion | Wirkung |
+| Action | Effect |
 |---|---|
-| `keys:<kürzel>` | Tastenkürzel, z. B. `keys:opt+return`, `keys:cmd+shift+4`. Siehe [Tasten](#tasten). |
-| `media:<taste>` | Medientaste: `playpause`, `next`, `previous`, `mute` |
-| `shell:<befehl>` | Shell-Befehl, z. B. `shell:shortcuts run 'Licht an'`. Die App nutzt `/bin/zsh -lc`, die Bridge `/bin/sh`. |
-| `midi:note:<nr>` | Note On (Velocity 127), nach 50 ms Note Off. `nr` 0–127. Nur App. |
-| `midi:cc:<nr>` | CC-Wert 127, nach 50 ms 0. Nur App. |
-| `midi:cc:<nr>=<wert>` | CC mit festem Wert 0–127. Nur App. |
-| `midi:pc:<nr>` | Program Change 0–127. Nur App. |
-| `mode:<Name>` | Modus einschalten. Nur App. |
-| `mode:off` | Modus ausschalten. Nur App. |
-| `mode:toggle:<Name>` | Modus ein- oder ausschalten. Nur App. |
-| `none` | nichts tun, auch nicht das, was in einem folgenden Profil steht |
+| `keys:<shortcut>` | keyboard shortcut, e.g. `keys:opt+return`, `keys:cmd+shift+4`. See [Keys](#keys). |
+| `media:<key>` | media key: `playpause`, `next`, `previous`, `mute` |
+| `shell:<command>` | shell command, e.g. `shell:shortcuts run 'Lights on'`. The app uses `/bin/zsh -lc`, the bridge `/bin/sh`. |
+| `midi:note:<nr>` | Note On (velocity 127), Note Off after 50 ms. `nr` 0–127. App only. |
+| `midi:cc:<nr>` | CC value 127, then 0 after 50 ms. App only. |
+| `midi:cc:<nr>=<value>` | CC with a fixed value 0–127. App only. |
+| `midi:pc:<nr>` | Program Change 0–127. App only. |
+| `mode:<Name>` | switch a mode on. App only. |
+| `mode:off` | switch the mode off. App only. |
+| `mode:toggle:<Name>` | switch a mode on or off. App only. |
+| `none` | do nothing, not even what a following profile contains |
 
-### Für Drehen (`rotate`, `rotate_pressed`)
+### For rotation (`rotate`, `rotate_pressed`)
 
-| Aktion | Wirkung |
+| Action | Effect |
 |---|---|
-| `volume` | Systemlautstärke, mit Pegel auf der Matrix |
-| `scroll` | Mausrad an der Position des Mauszeigers. Mit Tasten: `scroll:ctrl+opt`. |
-| `midi:cc:<nr>` | Absoluter CC-Wert 0–127, mit Pegel auf der Matrix. Die App merkt sich den Wert pro Kanal und Controller, solange sie läuft. Er beginnt bei 0. Nur App. |
-| `midi:cc:<nr>:relative` | Relative Änderung, kodiert nach `midi_relative`. Nur App. |
-| `none` | nichts tun |
+| `volume` | system volume, with a level on the matrix |
+| `scroll` | mouse wheel at the pointer position. With keys: `scroll:ctrl+opt`. |
+| `midi:cc:<nr>` | absolute CC value 0–127, with a level on the matrix. The app keeps the value per channel and controller while it runs. It starts at 0. App only. |
+| `midi:cc:<nr>:relative` | relative change, encoded according to `midi_relative`. App only. |
+| `none` | do nothing |
 
-### Für `hold`
+### For `hold`
 
-| Aktion | Wirkung |
+| Action | Effect |
 |---|---|
-| `midi:note:<nr>` | Note On beim Drücken, Note Off beim Loslassen |
-| `midi:cc:<nr>` | Wert 127 beim Drücken, 0 beim Loslassen |
-| `none` | `hold` stilllegen; dann gelten wieder `press`, `double_press` und `long_press` |
+| `midi:note:<nr>` | Note On on press, Note Off on release |
+| `midi:cc:<nr>` | value 127 on press, 0 on release |
+| `none` | silence `hold`; `press`, `double_press` and `long_press` apply again |
 
-### MIDI-Kanal
+For any other action under `hold`, the app writes a message to the debug log and treats the press as if `hold` were not mapped.
 
-Jede MIDI-Aktion kann am Ende mit `@<kanal>` einen eigenen Kanal 1–16 bekommen, z. B. `midi:note:36@10` oder `midi:cc:21:relative@2`. Ohne Angabe gilt `midi_channel`.
+### MIDI channel
 
-Die App stellt dafür einen virtuellen MIDI-Ausgang mit dem Namen „Nuimo“ bereit. In Resolume wird er unter Preferences › MIDI als Eingang aktiviert.
+Every MIDI action can get its own channel 1–16 with `@<channel>` at the end, e.g. `midi:note:36@10` or `midi:cc:21:relative@2`. Without it, `midi_channel` applies.
 
-### Tasten
+For this, the app provides a virtual MIDI output named “Nuimo”. In Resolume, enable it as an input under Preferences › MIDI.
 
-Ein Kürzel besteht aus null oder mehr Modifiern und genau einer Taste, verbunden mit `+`.
+### Keys
 
-- Modifier: `cmd`, `shift`, `ctrl`, `opt` (auch `alt`).
-- Buchstaben und Ziffern: `a`–`z`, `0`–`9`.
-- Zeichen: `-`, `=`, `[`, `]`, `\`, `;`, `'`, `,`, `.`, `/`, `` ` ``.
-- Sondertasten: `return`, `enter`, `tab`, `space`, `delete`, `forwarddelete`, `escape`, `home`, `end`, `pageup`, `pagedown`, `left`, `right`, `up`, `down`.
-- Funktionstasten: `f1`–`f20`.
+A shortcut consists of zero or more modifiers and exactly one key, joined with `+`.
 
-Tasten folgen der Position auf der US-Tastatur. Auf einer deutschen Tastatur sind deshalb `y` und `z` vertauscht, und Zeichen wie `-` oder `/` liegen auf anderen Tasten als aufgedruckt.
+- Modifiers: `cmd`, `shift`, `ctrl`, `opt` (also `alt`).
+- Letters and digits: `a`–`z`, `0`–`9`.
+- Characters: `-`, `=`, `[`, `]`, `\`, `;`, `'`, `,`, `.`, `/`, `` ` ``.
+- Special keys: `return`, `enter`, `tab`, `space`, `delete`, `forwarddelete`, `escape`, `home`, `end`, `pageup`, `pagedown`, `left`, `right`, `up`, `down`.
+- Function keys: `f1`–`f20`.
 
-## Rückmeldung auf der Matrix
+Keys follow their position on the US keyboard. On a German keyboard, `y` and `z` are therefore swapped, and characters such as `-` or `/` are on different keys than printed.
 
-| Was | Bild |
+## Feedback on the matrix
+
+| What | Image |
 |---|---|
-| `press`, `long_press`, `double_press` | Smiley, gefüllter Kreis, zwei Punkte |
-| Wischen, `fly_*` | Pfeil in die jeweilige Richtung |
-| Tippen, langes Berühren | Punkt am jeweiligen Rand |
-| `volume`, absoluter `midi:cc` | Pegel |
-| Modus an / aus | „M“ / „X“, nur App |
+| `press`, `long_press`, `double_press` | smiley, filled circle, two dots |
+| swipe, `fly_*` | arrow in the respective direction |
+| touch, long touch | dot at the respective edge |
+| `volume`, absolute `midi:cc` | level |
+| mode on / off | “M” / “X”, app only |
 
-Ein Bild erscheint nur, wenn eine Aktion ausgeführt wurde, nicht bei `none` oder unbelegten Ereignissen.
+An image only appears when an action was performed, not for `none` or unmapped events.
 
-## Beispiele
+## Examples
 
-### Standard und TradingView
+### Default and TradingView
 
 ```toml
 [settings]
@@ -165,14 +167,14 @@ swipe_right = "media:next"
 
 [apps.TradingView]
 rotate = "scroll"
-press = "keys:opt+return"      # aktives Chart maximieren / zurück
-swipe_right = "keys:tab"       # nächstes Chart
-swipe_left = "keys:shift+tab"  # voriges Chart
+press = "keys:opt+return"      # maximize the active chart / back
+swipe_right = "keys:tab"       # next chart
+swipe_left = "keys:shift+tab"  # previous chart
 ```
 
-### Resolume als Modus
+### Resolume as a mode
 
-Der Modus wird mit langem Berühren oben ein- und ausgeschaltet und gilt dann auch, wenn eine andere App vorne ist.
+The mode is switched on and off with a long touch at the top and then applies even while another app is in front.
 
 ```toml
 [settings]
@@ -184,19 +186,19 @@ midi_relative = "twos"
 longtouch_top = "mode:toggle:Resolume"
 
 [modes.Resolume]
-rotate = "midi:cc:20"                  # z. B. Opacity der Ebene
-rotate_pressed = "midi:cc:21:relative" # z. B. Effektstärke, in Resolume auf „Relative“ stellen
-hold = "midi:note:40"                  # Flash, solange gedrückt
-swipe_right = "midi:note:36"           # nächster Clip
-swipe_left = "midi:note:37"            # voriger Clip
-fly_left = "midi:pc:0"                 # Komposition 1
-fly_right = "midi:pc:1"                # Komposition 2
+rotate = "midi:cc:20"                  # e.g. layer opacity
+rotate_pressed = "midi:cc:21:relative" # e.g. effect amount, set to "Relative" in Resolume
+hold = "midi:note:40"                  # flash while held
+swipe_right = "midi:note:36"           # next clip
+swipe_left = "midi:note:37"            # previous clip
+fly_left = "midi:pc:0"                 # composition 1
+fly_right = "midi:pc:1"                # composition 2
 longtouch_top = "mode:toggle:Resolume"
 ```
 
-Weil `hold` belegt ist, gibt es in diesem Modus keinen `press`, `double_press` oder `long_press`.
+Because `hold` is mapped, this mode has no `press`, `double_press` or `long_press`.
 
-### Resolume nur, wenn es vorne ist
+### Resolume only while it is in front
 
 ```toml
 [apps."Resolume Arena"]
@@ -204,16 +206,16 @@ rotate = "midi:cc:20"
 press = "midi:note:36@2"
 ```
 
-## Unterschiede zu bridge.py
+## Differences from bridge.py
 
-Die Python-Bridge ist ein Prototyp und kennt nur einen Teil des Formats:
+The Python bridge is a prototype and only understands part of the format:
 
-| Angabe | App | bridge.py |
+| Entry | App | bridge.py |
 |---|---|---|
-| `[settings]`, `[default]`, `[apps.*]` | ja | ja |
-| `keys`, `media`, `volume`, `scroll`, `shell`, `none` | ja | ja |
-| `[modes.*]`, `mode:*` | ja | nein |
-| `midi:*`, `midi_*`-Einstellungen | ja | nein |
-| Ereignis `hold` | ja | nein |
+| `[settings]`, `[default]`, `[apps.*]` | yes | yes |
+| `keys`, `media`, `volume`, `scroll`, `shell`, `none` | yes | yes |
+| `[modes.*]`, `mode:*` | yes | no |
+| `midi:*`, `midi_*` settings | yes | no |
+| `hold` event | yes | no |
 
-Unbekannte Aktionen wie `midi:*` oder `mode:*` meldet `bridge.py` im Terminal und führt sie nicht aus. Abschnitte `[modes.*]`, die `midi_*`-Einstellungen und das Ereignis `hold` übergeht sie ohne Meldung.
+`bridge.py` reports unknown actions such as `midi:*` or `mode:*` in the terminal and does not run them. It skips `[modes.*]` sections, the `midi_*` settings and the `hold` event without a message.

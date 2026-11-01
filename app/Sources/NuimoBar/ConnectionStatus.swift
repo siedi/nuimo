@@ -13,19 +13,19 @@ enum ConnectionStatus: Equatable, Sendable {
     func menuText(batteryLevel: Int?) -> String {
         switch self {
         case .searching:
-            String(localized: "Suche Nuimo … (einmal drücken)")
+            String(localized: "Searching for Nuimo … (press once)")
         case .connected:
             if let batteryLevel {
-                String(localized: "Verbunden · Akku \(batteryLevel) %")
+                String(localized: "Connected · Battery \(batteryLevel) %")
             } else {
-                String(localized: "Verbunden")
+                String(localized: "Connected")
             }
         case .bluetoothOff:
-            String(localized: "Bluetooth ist aus")
+            String(localized: "Bluetooth is off")
         case .unauthorized:
-            String(localized: "Bluetooth nicht erlaubt")
+            String(localized: "Bluetooth not allowed")
         case .unsupported:
-            String(localized: "Bluetooth nicht verfügbar")
+            String(localized: "Bluetooth unavailable")
         }
     }
 }

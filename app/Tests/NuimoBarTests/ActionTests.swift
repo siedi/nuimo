@@ -44,7 +44,7 @@ struct ActionTests {
 
     @Test func noneAndUnknown() throws {
         #expect(try Action(parsing: "none") == .none)
-        #expect(throws: ActionParseError.unknownAction("midi:note:36")) { try Action(parsing: "midi:note:36") }
+        #expect(throws: ActionParseError.unknownAction("osc:/layer/1")) { try Action(parsing: "osc:/layer/1") }
         #expect(throws: ActionParseError.unknownAction("")) { try Action(parsing: "") }
     }
 

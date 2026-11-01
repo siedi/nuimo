@@ -42,7 +42,7 @@ struct ConfigStoreTests {
         _ = store.current()
         try write("[default\npress = ", at: 2000)
         #expect(store.current().standard["press"] == "keys:a")
-        #expect(store.error?.hasPrefix("Zeile 1") == true)
+        #expect(store.error?.hasPrefix("Line 1") == true)
         try write("[default]\npress = \"keys:c\"", at: 3000)
         #expect(store.current().standard["press"] == "keys:c")
         #expect(store.error == nil)
@@ -52,7 +52,7 @@ struct ConfigStoreTests {
     @Test func missingFileIsReported() {
         let store = ConfigStore(fileURL: fileURL)
         #expect(store.current() == Config())
-        #expect(store.error == "Datei nicht gefunden")
+        #expect(store.error == "File not found")
     }
 
     @Test func installsTheDefaultOnlyOnce() throws {

@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "NuimoBar",
-    defaultLocalization: "de",
+    defaultLocalization: "en",
     platforms: [.macOS(.v14)],
     dependencies: [
         .package(url: "https://github.com/LebJe/TOMLKit", from: "0.6.0")

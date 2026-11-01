@@ -7,29 +7,35 @@ final class AppState {
     var connection: ConnectionStatus = .searching
     var batteryLevel: Int?
     var lastActivity: Controller.Activity?
-    /// Error in `config.toml`, already in German.
+    /// Error in `config.toml`, ready for the menu.
     var configError: String?
+    var activeMode: String?
+    /// Modes from `config.toml`, sorted.
+    var modeNames: [String] = []
 
     var statusText: String {
         connection.menuText(batteryLevel: batteryLevel)
     }
 
-    /// "Profil: TradingView", "Profil: Standard" or "Modus: Resolume", once an event was handled.
+    /// "Mode: Resolume" while a mode is on, otherwise "Profile: TradingView" or "Profile: Default" once an
+    /// event was handled.
     var profileText: String? {
+        if let activeMode {
+            return String(localized: "Mode: \(activeMode)")
+        }
         switch lastActivity?.profile {
-        case .mode(let name): String(localized: "Modus: \(name)")
-        case .app(let name): String(localized: "Profil: \(name)")
-        case .standard: String(localized: "Profil: Standard")
-        case nil: nil
+        case .mode, .standard: return String(localized: "Profile: Default")
+        case .app(let name): return String(localized: "Profile: \(name)")
+        case nil: return nil
         }
     }
 
-    /// "Letzte Geste: press → keys:opt+return", or a note that the event is not mapped.
+    /// "Last gesture: press → keys:opt+return", or a note that the event is not mapped.
     var lastActivityText: String? {
         guard let activity = lastActivity else { return nil }
         if let action = activity.action {
-            return String(localized: "Letzte Geste: \(activity.event) → \(action)")
+            return String(localized: "Last gesture: \(activity.event) → \(action)")
         }
-        return String(localized: "Letzte Geste: \(activity.event) (nicht belegt)")
+        return String(localized: "Last gesture: \(activity.event) (not mapped)")
     }
 }

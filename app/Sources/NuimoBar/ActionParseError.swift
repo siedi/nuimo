@@ -6,6 +6,9 @@ enum ActionParseError: Error, Equatable, CustomStringConvertible {
     case unknownMediaKey(String)
     case missingArgument(String)
     case unexpectedArgument(String)
+    case invalidMIDI(String)
+    case invalidNumber(String)
+    case invalidChannel(String)
 
     var description: String {
         switch self {
@@ -15,6 +18,9 @@ enum ActionParseError: Error, Equatable, CustomStringConvertible {
         case .unknownMediaKey(let name): "unknown media key '\(name)'"
         case .missingArgument(let kind): "'\(kind)' needs an argument"
         case .unexpectedArgument(let kind): "'\(kind)' takes no argument"
+        case .invalidMIDI(let text): "invalid MIDI action 'midi:\(text)'"
+        case .invalidNumber(let text): "'\(text)' is not a number from 0 to 127"
+        case .invalidChannel(let text): "'\(text)' is not a MIDI channel from 1 to 16"
         }
     }
 }
