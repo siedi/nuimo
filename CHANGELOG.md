@@ -14,10 +14,12 @@ All notable changes to this project. The format follows [Keep a Changelog](https
 - Menu bar app: event `hold` for held notes and CCs.
 - Menu bar app: modes `[modes.*]`, switched via the “Mode” submenu (only if the file contains modes) or with `mode:<Name>`, `mode:off` and `mode:toggle:<Name>`, with “M” and “X” on the matrix. The active mode survives a restart.
 - Menu bar app: optional debug log at `~/Library/Logs/NuimoBar/debug.log`, switched on and off and opened from the menu.
+- MIT license.
 - Project basics: Git repository, README, conventions in `CLAUDE.md`, mapping reference in `docs/config.md`.
 - Spec 001 for the Swift menu bar app, with MIDI output for Resolume and modes.
 - Python prototype: `nuimo.py` as a test tool, `bridge.py` as a service with app profiles, `config.toml` with a default and a TradingView mapping.
 
 ### Changed
 
-- Comments and docstrings in the Python code are in English. The terminal output stays German.
+- Documentation, menu texts, terminal output of the scripts and comments in the config files are now in English.
+- Comments and docstrings in the Python code are in English.

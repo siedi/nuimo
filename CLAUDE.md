@@ -1,53 +1,53 @@
 # Nuimo
 
-Zu Beginn jeder Session `.claude/handoff.md` lesen, falls vorhanden. Sie entsteht mit `/feierabend` und wird nicht committet.
+At the start of every session, read `.claude/handoff.md` if it exists. It is written by `/feierabend` and is not committed.
 
-Senic Nuimo als Controller für den Mac. Der Python-Prototyp (`nuimo.py`, `bridge.py`) läuft. Die Menüleisten-App in Swift unter `app/` ist im Aufbau, siehe [Spec 001](docs/specs/001-menueleisten-app.md). Überblick und Gerätewissen stehen im [README](README.md), das Format der Belegung in [docs/config.md](docs/config.md).
+Senic Nuimo as a controller for the Mac. The Python prototype (`nuimo.py`, `bridge.py`) works. The Swift menu bar app under `app/` is work in progress, see [Spec 001](docs/specs/001-menu-bar-app.md). Overview and device knowledge are in the [README](README.md), the mapping format in [docs/config.md](docs/config.md).
 
-## Sprache
+## Language
 
-- **Deutsch:** Dokumentation (README, `docs/`, CHANGELOG), Commit-Messages, Texte in der Oberfläche (Menü, Meldungen, Terminal-Ausgaben der Skripte), Kommentare in `config.toml` und `default-config.toml`.
-- **Englisch:** alles im Code, also Bezeichner, Kommentare, Docstrings und Meldungen im Debug-Log.
+- **English:** everything in the repository: code, comments, docs (README, `docs/`, CHANGELOG), commit messages, UI texts (menu, messages, terminal output of the scripts), comments in `config.toml` and `default-config.toml`, debug log messages.
+- **German:** only the conversation with the maintainer.
 
 ## Markdown
 
-Ein Absatz ist eine Zeile, ein Listenpunkt ebenso. Keine festen Zeilenumbrüche.
+One paragraph is one line, one list item as well. No hard line wraps.
 
-## Ablauf für Neues
+## Workflow for new features
 
-1. Am Gerät mit den Python-Skripten ausprobieren, wenn Hardware-Verhalten unklar ist.
-2. In einer Spec festhalten: `docs/specs/NNN-name.md`, fortlaufend nummeriert, mit Statuszeile (Entwurf, In Arbeit, Umgesetzt).
-3. In Swift umsetzen.
-4. `docs/config.md`, `app/Resources/default-config.toml` und `CHANGELOG.md` nachziehen.
+1. Try it on the device with the Python scripts if the hardware behavior is unclear.
+2. Write it down in a spec: `docs/specs/NNN-name.md`, numbered consecutively, with a status line (Draft, In progress, Implemented).
+3. Implement it in Swift.
+4. Update `docs/config.md`, `app/Resources/default-config.toml` and `CHANGELOG.md`.
 
-`docs/config.md` ist die verbindliche Beschreibung des Formats. Änderungen am Format beginnen dort.
+`docs/config.md` is the binding description of the format. Changes to the format start there.
 
 ## Swift
 
 - Swift API Design Guidelines.
-- Swift 6 Language Mode mit strikter Concurrency. App-Zustand und Hardware-Anbindung laufen auf `@MainActor`.
-- Formatieren mit `swift format` (im Toolchain enthalten) und der Konfiguration in `app/.swift-format`.
-- `///`-Doku für Typen und Funktionen, deren Zweck nicht offensichtlich ist.
-- Keine Force-Unwraps, außer bei Konstanten und in Tests.
-- Ein Baustein pro Datei.
-- Tests mit Swift Testing (`import Testing`), ausführen mit `swift test` in `app/`.
-- UI-Texte über `String(localized:)`, `defaultLocalization` ist `"de"`.
-- Bauen mit `app/build.sh`, nicht nur mit `swift build`, damit Bundle und Signatur stimmen.
+- Swift 6 language mode with strict concurrency. App state and hardware access run on `@MainActor`.
+- Format with `swift format` (part of the toolchain) and the configuration in `app/.swift-format`.
+- `///` docs for types and functions whose purpose is not obvious.
+- No force unwraps, except for constants and in tests.
+- One building block per file.
+- Tests with Swift Testing (`import Testing`), run with `swift test` in `app/`.
+- UI texts via `String(localized:)`, `defaultLocalization` is `"en"`.
+- Build with `app/build.sh`, not just `swift build`, so the bundle and signature are right.
 
 ## Python
 
-- PEP 8 und Type Hints.
-- Abhängigkeiten als Inline-Metadaten (`# /// script`), Start mit `uv run <skript>.py`.
-- Die Skripte sind Prototyp- und Testwerkzeug, keine zweite Produktivlösung. Neue Funktionen kommen in die App, in die Skripte nur, was zum Ausprobieren am Gerät nötig ist.
+- PEP 8 and type hints.
+- Dependencies as inline metadata (`# /// script`), run with `uv run <script>.py`.
+- The scripts are a prototype and test tool, not a second production solution. New features go into the app; the scripts only get what is needed to try things on the device.
 
-## Testbarkeit
+## Testability
 
-Logik bleibt ohne Hardware testbar. Bluetooth, Systemaufrufe (Tasten, Lautstärke, Shell), MIDI, die aktive App und die Zeit laufen über Protokolle oder eingespeiste Abhängigkeiten. Was sich nur von Hand prüfen lässt, steht in der Abnahme-Checkliste der jeweiligen Spec.
+Logic stays testable without hardware. Bluetooth, system calls (keys, volume, shell), MIDI, the active app and time go through protocols or injected dependencies. Whatever can only be checked by hand goes into the acceptance checklist of the respective spec.
 
-## Versionen und Git
+## Versions and Git
 
-- Versionen nach SemVer, die App beginnt bei 0.1.0. Die Version steht in `app/Resources/Info.plist`.
-- `CHANGELOG.md` nach Keep a Changelog, Änderungen zuerst unter `[Unreleased]`.
-- Tag `vX.Y.Z` pro Veröffentlichung.
-- Kleine, thematische Commits. Claude committet nur auf Anweisung.
-- Keine „Co-Authored-by“-Zeilen oder andere Hinweise auf Claude in Commit-Messages.
+- Versions follow SemVer, the app starts at 0.1.0. The version is in `app/Resources/Info.plist`.
+- `CHANGELOG.md` follows Keep a Changelog, changes go under `[Unreleased]` first.
+- Tag `vX.Y.Z` per release.
+- Small, topical commits. Claude commits only when asked.
+- No “Co-Authored-by” lines or other references to Claude in commit messages.

@@ -1,66 +1,66 @@
 ---
 name: feierabend
-description: Session sauber abschließen. Arbeitsstand sichten, Format und Doku abgleichen, Tests laufen lassen, Memory und Handoff für die nächste Session schreiben.
+description: Wrap up the session cleanly. Review the working state, align format and docs, run the tests, write memory and the handoff for the next session.
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
-### Ziel
+### Goal
 
-Die Session mit möglichst wenigen Schritten abschließen. Danach stimmen Doku, Memory und Spec mit dem Stand überein, und `.claude/handoff.md` trägt ihn in die nächste Session.
+Wrap up the session in as few steps as possible. Afterwards, docs, memory and spec match the current state, and `.claude/handoff.md` carries it into the next session.
 
-Lesen, prüfen und zusammenfassen darfst du selbst. **Bevor du Dateien schreibst oder committest, zeigen, was und warum, und Bestätigung abwarten.** Ausnahme: `.claude/handoff.md` schreibst du ohne Rückfrage.
+You may read, check and summarize on your own. **Before writing files or committing, show what and why, and wait for confirmation.** Exception: `.claude/handoff.md` is written without asking.
 
-Das Repo ist lokal und hat kein Remote. Es gibt keine Issues und kein CI. Offene Punkte stehen im Handoff und, wenn sie zu einer Spec gehören, in deren Abschnitt „Offene Punkte“.
+There are no issues and no CI. Open items live in the handoff and, if they belong to a spec, in its “Open points” section.
 
-### Ablauf
+### Steps
 
-#### 1. Lage, ein Aufruf
+#### 1. Situation, one call
 
 ```bash
 git status --short; git log --oneline -10; git log -10 --format=%B | grep -inE "co-authored-by|generated with|noreply@anthropic"
 ```
 
-- In 3–6 Stichpunkten zusammenfassen, was die Session geändert hat und welche Entscheidungen mit welcher Begründung gefallen sind.
-- Uncommittete Änderungen: thematisch gruppierte Commits mit deutscher Message vorschlagen und erst nach Bestätigung committen. Keine Attribution, kein Hinweis auf Claude.
-- Trifft die `grep`-Zeile etwas, den Commit melden.
+- Summarize in 3–6 bullet points what the session changed and which decisions were made, with their reasons.
+- Uncommitted changes: propose topically grouped commits with an English message and commit only after confirmation. No attribution, no reference to Claude.
+- If the `grep` line matches anything, report the commit.
 
-#### 2. Prüfen, was die Session angefasst hat
+#### 2. Check what the session touched
 
-Nur für geänderte Bereiche, sonst überspringen:
+Only for changed areas, skip otherwise:
 
-- **Swift (`app/`):** `swift test` und `swift format lint --recursive Sources Tests` in `app/`. Bei Änderungen an Bundle, `Info.plist` oder `build.sh` zusätzlich `./build.sh`. Ergebnis nennen, nicht selbst formatieren.
+- **Swift (`app/`):** `swift test` and `swift format lint --recursive Sources Tests` in `app/`. For changes to the bundle, `Info.plist` or `build.sh`, also `./build.sh`. Report the result, do not format yourself.
 - **Python:** `python3 -m py_compile nuimo.py bridge.py`.
-- **Sprache:** Kommentare, Docstrings und Bezeichner im Code englisch, Doku und Texte in der Oberfläche deutsch. Abweichungen in geänderten Dateien melden.
-- **TODO, FIXME, HACK** in geänderten Dateien: nennen und in den Handoff übernehmen.
+- **Language:** everything in the repository is English. Report German text in changed files.
+- **TODO, FIXME, HACK** in changed files: list them and carry them into the handoff.
 
-#### 3. Format und Doku abgleichen
+#### 3. Align format and docs
 
-`docs/config.md` ist die verbindliche Beschreibung der Belegung. Hat die Session Ereignisse, Aktionen oder Einstellungen geändert, müssen diese Stellen dazu passen:
+`docs/config.md` is the binding description of the mapping. If the session changed events, actions or settings, these places must match:
 
 - `docs/config.md`
-- `app/Resources/default-config.toml`, sobald es sie gibt
-- `config.toml` und `bridge.py`, wenn die Bridge die Angabe auch kennt, sonst die Tabelle „Unterschiede zu bridge.py“
-- `CHANGELOG.md` unter `[Unreleased]`
+- `app/Resources/default-config.toml`
+- `config.toml` and `bridge.py` if the bridge knows the setting too, otherwise the table “Differences from bridge.py”
+- `CHANGELOG.md` under `[Unreleased]`
 
-Außerdem:
+Also:
 
-- **Spec:** Status und Abnahme-Checkliste der betroffenen Spec unter `docs/specs/` an den Stand anpassen. Erledigte Punkte abhaken, geklärte offene Punkte mit Ergebnis eintragen.
-- **README:** Neues Wissen über das Gerät gehört in den Abschnitt „Eigenheiten des Nuimo“. Geänderte Befehle zum Bauen und Starten ebenso.
-- **CLAUDE.md:** nur dauerhafte Regeln. Stand und nächste Schritte gehören in den Handoff.
+- **Spec:** bring the status and acceptance checklist of the affected spec under `docs/specs/` up to date. Tick off finished items, enter resolved open items with their outcome.
+- **README:** new knowledge about the device goes into “Nuimo quirks”. Changed commands for building and running as well.
+- **CLAUDE.md:** only lasting rules. State and next steps belong in the handoff.
 
-Bei Abweichungen melden, welche Seite vermutlich neuer ist, und fragen, welche gilt. Geplante Änderungen zeigen, dann schreiben.
+For mismatches, say which side is probably newer and ask which one applies. Show planned changes, then write.
 
 #### 4. Memory
 
-`MEMORY.md` steht schon im Kontext, der Pfad im System-Prompt. Nur die Dateien öffnen, die sich ändern.
+`MEMORY.md` is already in context, the path is in the system prompt. Open only the files that change.
 
-- Projektstand in `nuimo-project-status.md` auf den Stand bringen.
-- Neu nur, was nicht in Code, Git, README, Specs oder `CLAUDE.md` steht, zum Beispiel Rückmeldungen zur Arbeitsweise oder verworfene Ansätze mit Grund.
-- Veraltetes korrigieren, Falsches löschen, relative Datumsangaben in absolute umwandeln.
+- Bring the project status in `nuimo-project-status.md` up to date.
+- Add only what is not in code, Git, README, specs or `CLAUDE.md`, for example feedback on the way of working or discarded approaches with the reason.
+- Correct outdated entries, delete wrong ones, turn relative dates into absolute ones.
 
-#### 5. Prozesse
+#### 5. Processes
 
-Der Nuimo erlaubt nur eine Verbindung. Laufende `bridge.py`, `nuimo.py` oder eine gestartete `NuimoBar.app` auflisten und anbieten, sie zu beenden:
+The Nuimo allows only one connection. List running `bridge.py`, `nuimo.py` or a launched `NuimoBar.app` and offer to quit them:
 
 ```bash
 pgrep -fl "bridge.py|nuimo.py|NuimoBar"
@@ -68,30 +68,30 @@ pgrep -fl "bridge.py|nuimo.py|NuimoBar"
 
 #### 6. Handoff
 
-`.claude/handoff.md` überschreiben und dem User den Inhalt zeigen:
+Overwrite `.claude/handoff.md` and show its content to the user:
 
 ```markdown
-# Session-Handoff [YYYY-MM-DD]
+# Session handoff [YYYY-MM-DD]
 
-## Erledigt
-## Offen
-## Nächste Schritte (konkret, wo weitergemacht wird)
-## Geändert an Doku und Memory
-## Status (Commits, Tests, laufende Prozesse)
+## Done
+## Open
+## Next steps (concrete, where to continue)
+## Changes to docs and memory
+## Status (commits, tests, running processes)
 ```
 
-Die Datei wird nicht committet. Die nächste Session liest sie zu Beginn, so steht es in `CLAUDE.md`.
+The file is not committed. The next session reads it at the start, as stated in `CLAUDE.md`.
 
-### Regeln
+### Rules
 
-- **Nichts committen ohne Bestätigung.** Es gibt kein Remote, also auch nichts zu pushen.
-- **Keine Formatter mit Autofix.** Nur prüfen und melden.
-- **Kein Subagent.**
-- **Deutsch** mit dem User und in der Doku, Englisch im Code.
-- **Markdown:** ein Absatz bzw. Listenpunkt pro Zeile.
-- **Kein Hinweis auf Claude oder KI** in Commits, Handoff oder Doku.
+- **Do not commit or push without confirmation.**
+- **No formatters with autofix.** Only check and report.
+- **No subagent.**
+- **German** in the conversation with the user, **English** in the repository.
+- **Markdown:** one paragraph or list item per line.
+- **No reference to Claude or AI** in commit messages, specs or reference docs. The origin story in the README is intentional.
 
 $ARGUMENTS
 
 ---
-*v1.0 — 2026-10-31 — neu angelegt. Matthias Siedler*
+*v1.2 — 2026-10-31 — English, for the public repository. Matthias Siedler*

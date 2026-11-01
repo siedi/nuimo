@@ -84,9 +84,9 @@ class Config:
             self.mtime = mtime
             try:
                 self.data = tomllib.loads(CONFIG.read_text())
-                print("config.toml geladen")
+                print("config.toml loaded")
             except tomllib.TOMLDecodeError as e:
-                print("Fehler in config.toml, alte Belegung bleibt:", e)
+                print("Error in config.toml, keeping the previous mapping:", e)
         return self.data
 
 
@@ -162,7 +162,7 @@ class Volume:
 
 async def session(client: BleakClient, config: Config, volume: Volume):
     battery = (await client.read_gatt_char(BATTERY))[0]
-    print(f"Verbunden. Akku: {battery} %")
+    print(f"Connected. Battery: {battery} %")
     display = Display(client)
     rotation_rest = {}  # partial steps for rotate_left/right
 
@@ -185,10 +185,10 @@ async def session(client: BleakClient, config: Config, volume: Volume):
             elif kind == "none":
                 return
             else:
-                print("  unbekannte Aktion")
+                print("  unknown action")
                 return
         except KeyError as e:
-            print("  unbekannte Taste oder Medientaste:", e)
+            print("  unknown key or media key:", e)
             return
         if event in PATTERNS:
             display.show(PATTERNS[event], seconds=0.8)
@@ -199,7 +199,7 @@ async def session(client: BleakClient, config: Config, volume: Volume):
         if action:
             perform(app, event, action)
         else:
-            print(f"[{app}] {event} (nicht belegt)")
+            print(f"[{app}] {event} (not mapped)")
 
     def on_rotate(delta: int, pressed: bool):
         app, chain = profiles()
@@ -213,7 +213,7 @@ async def session(client: BleakClient, config: Config, volume: Volume):
                 elif kind == "scroll":
                     send_scroll(delta * settings.get("scroll_speed", 0.5), arg)
                 elif kind != "none":
-                    print(f"[{app}] {base}: unbekannte Dreh-Aktion {profile[base]}")
+                    print(f"[{app}] {base}: unknown rotation action {profile[base]}")
                 return
             if f"{base}_left" in profile or f"{base}_right" in profile:
                 step = settings.get("rotate_step", 300)
@@ -253,18 +253,18 @@ async def session(client: BleakClient, config: Config, volume: Volume):
     display.show(SMILEY, seconds=1)
     while client.is_connected:
         await asyncio.sleep(1)
-    print("Verbindung getrennt.")
+    print("Disconnected.")
 
 
 async def main():
     if not AXIsProcessTrustedWithOptions({kAXTrustedCheckOptionPrompt: True}):
-        print("Hinweis: Ohne Freigabe unter Systemeinstellungen › Datenschutz & Sicherheit › Bedienungshilfen")
-        print("für dieses Terminal kommen Tastenkürzel und Scrollen nicht an. Danach das Skript neu starten.")
+        print("Note: without the permission under System Settings › Privacy & Security › Accessibility")
+        print("for this terminal, keyboard shortcuts and scrolling do not arrive. Restart the script afterwards.")
     config = Config()
     config.get()
     volume = Volume()
     while True:
-        print("Suche Nuimo … (zum Aufwecken einmal drücken)")
+        print("Searching for Nuimo … (press once to wake it up)")
         device = await BleakScanner.find_device_by_name("Nuimo", timeout=30)
         if device is None:
             continue
@@ -272,7 +272,7 @@ async def main():
             async with BleakClient(device) as client:
                 await session(client, config, volume)
         except Exception as e:
-            print("Verbindungsfehler:", e)
+            print("Connection error:", e)
         await asyncio.sleep(2)
 
 

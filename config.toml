@@ -1,30 +1,30 @@
-# Nuimo-Belegung pro App. Änderungen gelten sofort, ohne Neustart.
+# Nuimo mapping per app. Changes take effect immediately, without a restart.
 #
-# Ereignisse:
+# Events:
 #   press, long_press, double_press
 #   swipe_left, swipe_right, swipe_up, swipe_down
 #   touch_left, touch_right, touch_top, touch_bottom
 #   longtouch_left, longtouch_right, longtouch_top, longtouch_bottom
 #   fly_left, fly_right
-#   rotate, rotate_pressed                          → fortlaufend: "volume" oder "scroll"
-#   rotate_left, rotate_right,                      → schrittweise, z. B. mit Tastenkürzeln
+#   rotate, rotate_pressed                          → continuous: "volume" or "scroll"
+#   rotate_left, rotate_right,                      → in steps, e.g. with keyboard shortcuts
 #   rotate_pressed_left, rotate_pressed_right
 #
-# Aktionen:
-#   "keys:opt+return"   Tastenkürzel aus cmd, shift, ctrl, opt und einer Taste
-#   "media:playpause"   Medientaste: playpause, next, previous, mute
-#   "volume"            Systemlautstärke, mit Pegel auf der Matrix (nur rotate)
-#   "scroll"            Mausrad an der Mausposition (nur rotate), auch mit Tasten, z. B. "scroll:ctrl+opt"
-#   "shell:…"           Shell-Befehl, z. B. "shell:shortcuts run 'Licht an'"
-#   "none"              nichts tun, auch nicht das, was im Standardprofil steht
+# Actions:
+#   "keys:opt+return"   keyboard shortcut from cmd, shift, ctrl, opt and one key
+#   "media:playpause"   media key: playpause, next, previous, mute
+#   "volume"            system volume, with a level on the matrix (rotate only)
+#   "scroll"            mouse wheel at the pointer (rotate only), also with keys, e.g. "scroll:ctrl+opt"
+#   "shell:…"           shell command, e.g. "shell:shortcuts run 'Lights on'"
+#   "none"              do nothing, not even what the default profile contains
 #
-# Apps werden über ihren Namen (wie im Dock) oder ihre Bundle-ID erkannt, Namen mit Leerzeichen in
-# Anführungszeichen: [apps."Google Chrome"]. Was ein App-Profil nicht belegt, kommt aus [default].
-# Buchstabentasten folgen der US-Tastaturposition: auf deutscher Tastatur sind y und z vertauscht.
+# Apps are recognized by their name (as in the Dock) or their bundle ID. Names with spaces go in
+# quotes: [apps."Google Chrome"]. Anything an app profile does not map comes from [default].
+# Letter keys follow the US keyboard position: on a German keyboard, y and z are swapped.
 
 [settings]
-scroll_speed = 0.5  # Pixel pro Drehwert; negativ kehrt die Richtung um
-rotate_step = 300   # Drehwert pro Schritt bei rotate_left/right (volle Umdrehung etwa 2650)
+scroll_speed = 0.5  # pixels per rotation unit; negative reverses the direction
+rotate_step = 300   # rotation units per step for rotate_left/right (one full turn is about 2650)
 
 [default]
 rotate = "volume"
@@ -35,6 +35,6 @@ swipe_right = "media:next"
 
 [apps.TradingView]
 rotate = "scroll"
-press = "keys:opt+return"      # aktives Chart im Layout maximieren / zurück
-swipe_right = "keys:tab"        # nächstes Chart
-swipe_left = "keys:shift+tab"  # voriges Chart
+press = "keys:opt+return"      # maximize the active chart in the layout / back
+swipe_right = "keys:tab"       # next chart
+swipe_left = "keys:shift+tab"  # previous chart

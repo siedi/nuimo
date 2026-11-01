@@ -1,73 +1,84 @@
 # Nuimo
 
-Der Senic Nuimo ist ein Drehknopf mit Taste, Touch-Oberfläche, Gestensensor und 9×9-LED-Matrix, angebunden über Bluetooth LE. Dieses Projekt macht ihn zum Controller für den Mac: Je nach App, die vorne ist, lösen Drehen, Drücken und Wischen Tastenkürzel, Scrollen, Medientasten, Lautstärke, Shell-Befehle oder MIDI-Signale aus.
+The Senic Nuimo is a rotary knob with a button, a touch surface, a gesture sensor and a 9×9 LED matrix, connected over Bluetooth LE. This project turns it into a controller for the Mac: depending on the app in front, turning, pressing and swiping trigger keyboard shortcuts, scrolling, media keys, volume, shell commands or MIDI messages.
 
-Es gibt zwei Teile:
+## Why
 
-- **Python-Prototyp** (`nuimo.py`, `bridge.py`): läuft im Terminal und dient zum schnellen Ausprobieren am Gerät.
-- **Menüleisten-App** (`app/`, im Aufbau): native Swift-App mit Verbindungsanzeige, Login-Start und MIDI-Ausgang. Siehe [Spec 001](docs/specs/001-menueleisten-app.md).
+I found my old Nuimo in a box in the basement. Senic stopped supporting it long ago, but after a night on the charger the matrix lit up again, and the ring still turns as smoothly as I remembered. Too good to go back into the box, so it became a small challenge with Claude Code: get the Nuimo working again without any help from the manufacturer, starting with a Python script that prints every input and ending up with a native menu bar app that also speaks MIDI.
 
-## Aufbau
+## Parts
+
+- **Python prototype** (`nuimo.py`, `bridge.py`): runs in the terminal and is meant for quick experiments with the device.
+- **Menu bar app** (`app/`, work in progress): native Swift app with connection status, launch at login and MIDI output. See [Spec 001](docs/specs/001-menu-bar-app.md).
+
+## Layout
 
 ```
-nuimo.py                Testwerkzeug: zeigt alle Eingaben an, gemeinsame Bausteine
-bridge.py               Dienst: setzt Gesten je nach App in Aktionen um
-config.toml             Belegung für bridge.py
-docs/config.md          Referenz der Belegung
-docs/specs/             Specs, fortlaufend nummeriert
-app/                    Menüleisten-App (im Aufbau)
-CHANGELOG.md            Änderungen
-CLAUDE.md               Konventionen für die Entwicklung
+nuimo.py                Test tool: prints every input, shared building blocks
+bridge.py               Service: turns gestures into actions depending on the app
+config.toml             Mapping for bridge.py
+docs/config.md          Mapping reference
+docs/specs/             Specs, numbered consecutively
+app/                    Menu bar app (work in progress)
+CHANGELOG.md            Changes
+CLAUDE.md               Development conventions for Claude Code
+LICENSE                 MIT license
 ```
 
-## Python-Prototyp
+## Python prototype
 
-Voraussetzung ist [uv](https://docs.astral.sh/uv/). Die Abhängigkeiten stehen in den Skripten selbst, `uv` installiert sie beim ersten Start.
+Requires [uv](https://docs.astral.sh/uv/). The dependencies are declared in the scripts themselves, and `uv` installs them on the first run.
 
 ```sh
-uv run nuimo.py    # Eingaben anzeigen und auf der Matrix spiegeln
-uv run bridge.py   # Nuimo als Controller nach config.toml
+uv run nuimo.py    # print inputs and mirror them on the matrix
+uv run bridge.py   # use the Nuimo as a controller according to config.toml
 ```
 
-Den Nuimo vor dem Start einmal drücken, damit er aufwacht. `bridge.py` verbindet sich nach einer Trennung von selbst neu und lädt `config.toml` bei jeder Änderung neu.
+Press the Nuimo once before starting so it wakes up. `bridge.py` reconnects on its own after a disconnect and reloads `config.toml` whenever it changes.
 
-Der Nuimo erlaubt nur eine Verbindung gleichzeitig. Läuft die App oder ein anderes Skript, findet ein zweites ihn nicht.
+The Nuimo allows only one connection at a time. While the app or another script is connected, a second one will not find it.
 
-## Menüleisten-App
+## Menu bar app
 
-Im Aufbau nach [Spec 001](docs/specs/001-menueleisten-app.md) §10. Die App verbindet sich mit dem Nuimo und führt die Belegung aus, wie `bridge.py`. MIDI und Modi fehlen noch. Voraussetzung ist Xcode mit Swift 6, zum Signieren ein Zertifikat „Apple Development“.
+Work in progress according to [Spec 001](docs/specs/001-menu-bar-app.md) §10. The app connects to the Nuimo and runs the mapping, including MIDI and modes. Launch at login and the hints in the menu are still missing. Building requires Xcode with Swift 6, and signing an “Apple Development” certificate. Without one, `build.sh` signs ad hoc.
 
 ```sh
 cd app
-./build.sh           # baut build/NuimoBar.app
-./build.sh install   # baut und kopiert nach /Applications
-swift test           # Tests
+./build.sh           # builds build/NuimoBar.app
+./build.sh install   # builds and copies to /Applications
+swift test           # tests
 ```
 
-Die Belegung der App liegt unter `~/Library/Application Support/NuimoBar/config.toml` und lässt sich über das Menü öffnen. Das Format beschreibt [docs/config.md](docs/config.md).
+The app's mapping lives in `~/Library/Application Support/NuimoBar/config.toml` and can be opened from the menu. The format is described in [docs/config.md](docs/config.md).
 
-## Berechtigungen
+## Permissions
 
-macOS fragt beim ersten Start nach zwei Freigaben. Beim Python-Prototyp gelten sie für das Terminal, bei der App für die App selbst.
+macOS asks for two permissions on the first start. For the Python prototype they apply to the terminal, for the app to the app itself.
 
-- **Bluetooth:** für die Verbindung zum Nuimo.
-- **Bedienungshilfen** (Systemeinstellungen › Datenschutz & Sicherheit › Bedienungshilfen): zum Senden von Tastenkürzeln, Medientasten und Scroll-Events an andere Apps. Ohne diese Freigabe kommen sie nicht an. Lautstärke und MIDI funktionieren trotzdem.
+- **Bluetooth:** to connect to the Nuimo.
+- **Accessibility** (System Settings › Privacy & Security › Accessibility): to send keyboard shortcuts, media keys and scroll events to other apps. Without it they do not arrive. Volume and MIDI work anyway.
 
-Nach dem Erteilen der Bedienungshilfen-Freigabe das Skript bzw. die App neu starten.
+Restart the script or the app after granting Accessibility.
 
-## Eigenheiten des Nuimo
+## Nuimo quirks
 
-Am Gerät getestet mit Firmware 2.0.0 und Hardware 1.3:
+Tested with firmware 2.0.0 and hardware 1.3:
 
-- Wischen kommt nur an, wenn man ganz bis zum Rand wischt, nicht wie auf einem Trackpad. Wischen eignet sich deshalb eher für seltene, bewusste Aktionen.
-- Die einzelne Status-LED, die anzeigt, wo oben ist, lässt sich nicht über Bluetooth steuern. Für Rückmeldungen steht nur die 9×9-Matrix zur Verfügung.
-- Nach dem Verbinden zeigt der Nuimo eine eigene Haken-Animation. Die Matrix erst etwa 2 s später beschreiben, sonst wird das Bild überschrieben.
-- Ein langer Druck ab 0,4 s fühlt sich gut an, 0,6 s war zu träge.
-- Eine volle Umdrehung ergibt einen Drehwert von etwa 2650.
+- A swipe only registers if you swipe all the way to the edge, unlike on a trackpad. Swipes are therefore better suited to rare, deliberate actions.
+- The single status LED that marks the top cannot be controlled over Bluetooth. The 9×9 matrix is the only way to give feedback.
+- After connecting, the Nuimo shows its own checkmark animation. Wait about 2 s before writing to the matrix, or the image gets overwritten.
+- A long press from 0.4 s feels right, 0.6 s was too sluggish.
+- One full turn gives a rotation value of about 2650.
 
-## Fehlersuche
+## Troubleshooting
 
-- **Kein Nuimo gefunden:** einmal drücken, damit er aufwacht. Prüfen, ob noch ein anderes Programm verbunden ist.
-- **Tastenkürzel kommen nicht an:** Freigabe unter Bedienungshilfen prüfen und das Programm neu starten.
-- **Falscher Buchstabe:** Tasten folgen der US-Tastatur, auf einer deutschen Tastatur sind `y` und `z` vertauscht.
-- **Belegung greift nicht:** auf Syntaxfehler in `config.toml` achten. `bridge.py` meldet sie im Terminal, die App im Menü.
+- **No Nuimo found:** press it once to wake it up. Check whether another program is still connected.
+- **Keyboard shortcuts do not arrive:** check the Accessibility permission and restart the program.
+- **Wrong letter:** keys follow the US keyboard layout. On a German keyboard, `y` and `z` are swapped.
+- **Mapping has no effect:** look for syntax errors in `config.toml`. `bridge.py` reports them in the terminal, the app in its menu.
+
+## License
+
+MIT, see [LICENSE](LICENSE). The app uses [TOMLKit](https://github.com/LebJe/TOMLKit) (MIT), the Python scripts use [bleak](https://github.com/hbldh/bleak) (MIT) and [PyObjC](https://github.com/ronaldoussoren/pyobjc) (MIT).
+
+This is not an official Senic project and is not affiliated with Senic. “Senic” and “Nuimo” are trademarks of their respective owners.

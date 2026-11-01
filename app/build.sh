@@ -9,11 +9,11 @@ cd "${0:A:h}"
 APP_NAME="NuimoBar"
 APP="build/$APP_NAME.app"
 
-echo "Baue $APP_NAME (release) …"
+echo "Building $APP_NAME (release) …"
 swift build -c release
 BIN_DIR="$(swift build -c release --show-bin-path)"
 
-echo "Setze $APP zusammen …"
+echo "Assembling $APP …"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/$APP_NAME" "$APP/Contents/MacOS/$APP_NAME"
@@ -25,28 +25,28 @@ IDENTITY_LINE="$(security find-identity -v -p codesigning | grep -m1 '"Apple Dev
 if [[ -n "$IDENTITY_LINE" ]]; then
     IDENTITY_HASH="$(awk '{ print $2 }' <<< "$IDENTITY_LINE")"
     IDENTITY_NAME="$(awk -F'"' '{ print $2 }' <<< "$IDENTITY_LINE")"
-    echo "Signiere mit „$IDENTITY_NAME“ …"
+    echo "Signing with “$IDENTITY_NAME” …"
     codesign --force --timestamp=none --sign "$IDENTITY_HASH" "$APP"
 else
-    echo "Warnung: Keine Identität „Apple Development“ gefunden, signiere ad hoc." >&2
-    echo "         Die Freigabe für Bedienungshilfen muss dann nach jedem Neubau neu erteilt werden." >&2
+    echo "Warning: no “Apple Development” identity found, signing ad hoc." >&2
+    echo "         The Accessibility permission then has to be granted again after every build." >&2
     codesign --force --sign - "$APP"
 fi
 codesign --verify --strict "$APP"
 
 # Place for Developer ID signing and notarization later on.
 
-echo "Fertig: $APP"
+echo "Done: $APP"
 
 if [[ "${1:-}" == "install" ]]; then
     TARGET="/Applications/$APP_NAME.app"
     if pgrep -xq "$APP_NAME"; then
-        echo "Beende laufende $APP_NAME …"
+        echo "Quitting running $APP_NAME …"
         osascript -e "quit app \"$APP_NAME\"" || pkill -x "$APP_NAME" || true
         sleep 1
     fi
-    echo "Installiere nach $TARGET …"
+    echo "Installing to $TARGET …"
     rm -rf "$TARGET"
     ditto "$APP" "$TARGET"
-    echo "Installiert: $TARGET"
+    echo "Installed: $TARGET"
 fi

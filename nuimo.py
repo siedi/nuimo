@@ -146,7 +146,7 @@ class Display:
             try:
                 await self.client.write_gatt_char(LED_MATRIX, frame, response=True)
             except Exception as e:
-                print("LED-Fehler:", e)
+                print("LED error:", e)
 
 
 class ButtonGestures:
@@ -204,22 +204,22 @@ class ButtonGestures:
 
 
 async def main():
-    print("Suche Nuimo …")
+    print("Searching for Nuimo …")
     device = await BleakScanner.find_device_by_name("Nuimo", timeout=15)
     if device is None:
-        print("Kein Nuimo gefunden. Ist er wach (einmal drücken)?")
+        print("No Nuimo found. Is it awake (press once)?")
         return
 
     async with BleakClient(device) as client:
         battery = (await client.read_gatt_char(BATTERY))[0]
-        print(f"Verbunden. Akku: {battery} %")
+        print(f"Connected. Battery: {battery} %")
         display = Display(client)
         # Wait for the Nuimo's own connection animation (check mark) first
         await asyncio.sleep(2)
         display.show(SMILEY)
 
         gesture_patterns = {"press": SMILEY, "long_press": CIRCLE, "double_press": TWO_DOTS}
-        gesture_labels = {"press": "kurzer Druck", "long_press": "langer Druck", "double_press": "Doppelklick"}
+        gesture_labels = {"press": "short press", "long_press": "long press", "double_press": "double press"}
         value = 50.0
 
         def on_gesture(name: str):
@@ -236,7 +236,7 @@ async def main():
             button.rotated()
             delta = int.from_bytes(data[:2], "little", signed=True)
             value = max(0.0, min(100.0, value + delta * 100 / ROTATION_PER_TURN))
-            print("Drehung (gedrückt)" if button.pressed else "Drehung", delta, f"→ {value:.0f} %")
+            print("rotation (pressed)" if button.pressed else "rotation", delta, f"→ {value:.0f} %")
             display.show(level(value))
 
         def on_swipe(_, data: bytearray):
@@ -246,7 +246,7 @@ async def main():
                 display.show(SWIPE_PATTERNS[code], seconds=0.8)
 
         def on_fly(_, data: bytearray):
-            print(FLY_NAMES.get(data[0], f"fly {data[0]}"), "Abstand", data[1])
+            print(FLY_NAMES.get(data[0], f"fly {data[0]}"), "distance", data[1])
             if data[0] in FLY_PATTERNS:
                 display.show(FLY_PATTERNS[data[0]], seconds=0.8)
 
@@ -255,10 +255,10 @@ async def main():
         await client.start_notify(SWIPE, on_swipe)
         await client.start_notify(FLY, on_fly)
 
-        print("Drehen, drücken, wischen … (Ctrl-C beendet)")
+        print("Turn, press, swipe … (Ctrl-C quits)")
         while client.is_connected:
             await asyncio.sleep(1)
-        print("Verbindung getrennt.")
+        print("Disconnected.")
 
 
 if __name__ == "__main__":
