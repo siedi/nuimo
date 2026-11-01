@@ -317,5 +317,5 @@ The script is structured so that Developer ID and notarization can be added late
 
 - Which relative encoding Resolume expects.
 - The name “NuimoBar” is a working title.
-- Developer ID and notarization, in case the app is to be passed on without a warning.
+- Developer ID and notarization: decided on 2026-11-01 against it for now. Everyone builds the app with their own Apple Development certificate, see the README.
 - A concrete use case is still missing. It decides whether and how a graphical editor follows.
