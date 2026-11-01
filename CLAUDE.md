@@ -32,7 +32,7 @@ One paragraph is one line, one list item as well. No hard line wraps.
 - One building block per file.
 - Tests with Swift Testing (`import Testing`), run with `swift test` in `app/`.
 - UI texts via `String(localized:)` in English, `defaultLocalization` is `"en"`. The German translation goes into `app/Resources/Localizable.xcstrings` (`InfoPlist.xcstrings` for `Info.plist` texts). `build.sh` adds new strings to the catalog and warns about missing translations; fill them in before committing.
-- Build with `app/build.sh`, not just `swift build`, so the bundle and signature are right.
+- Build with `app/build.sh`, not just `swift build`, so the bundle and signature are right. `app/build.sh install` also copies the app to `/Applications`. Signing needs an “Apple Development” certificate, see the README.
 
 ## Python
 

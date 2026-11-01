@@ -40,7 +40,9 @@ The Nuimo allows only one connection at a time. While the app or another script 
 
 ## Menu bar app
 
-Work in progress according to [Spec 001](docs/specs/001-menu-bar-app.md) §10. The app connects to the Nuimo and runs the mapping, including MIDI and modes. Launch at login and the hints in the menu are still missing. Building requires Xcode with Swift 6, and signing an “Apple Development” certificate. Without one, `build.sh` signs ad hoc.
+Work in progress according to [Spec 001](docs/specs/001-menu-bar-app.md) §10. The app connects to the Nuimo and runs the mapping, including MIDI and modes. Launch at login and the hints in the menu are still missing. Building requires Xcode with Swift 6. There is no prebuilt download; everyone builds the app themselves.
+
+For signing, `build.sh` uses the first “Apple Development” certificate in the keychain. A free Apple ID is enough: Xcode › Settings › Accounts › add the Apple ID › Manage Certificates › + › Apple Development. With this stable signature, the Bluetooth and Accessibility permissions are granted once and survive rebuilds. Without a certificate, `build.sh` signs ad hoc, and the Accessibility permission has to be granted again after every build. A self-built app is not downloaded, so Gatekeeper does not warn.
 
 ```sh
 cd app
